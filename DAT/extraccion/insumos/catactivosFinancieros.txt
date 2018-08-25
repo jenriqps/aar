@@ -1,0 +1,4 @@
+cod_asset|dsc_asset
+1|coupon_bond
+2|zero_bond
+3|mort_bond

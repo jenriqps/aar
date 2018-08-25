@@ -1,0 +1,15 @@
+id_parameter|dsc_parameter|val_parametro
+1|Mortality as % of Annuity 2000 Mortality Table|1
+2|Projected Asset Cash Flows Under Level Interest Scenario|0.045
+3|Total amount in the portfolio|200000000
+4|Bond Calls: Bonds are called if the annual rate on the bond exceeds the currently available market rate by:|0.01
+5|"Currently available ""AAA""-rated Bond rate equals Treasury Rate plus"|0.015
+6|Residential Mortgage Prepayments: Regular: (per annum)|0.03
+7|Residential Mortgage Prepayments: Additional:|0.15
+8|for each|0.01
+9|mortgage rate exceeds currently available mortgage rate|0.01
+10|Currently available mortgage rate equals Treasury Rate plus:|0.025
+11|Annual Expenses|650000
+12|Reinvestment Rate for Cash Balance (over Scenario Treasury Rate): Positive Balance|-0.0075
+13|Reinvestment Rate for Cash Balance (over Scenario Treasury Rate): Negative Balance|0.02
+14|Reserve Interest Rate|0.05

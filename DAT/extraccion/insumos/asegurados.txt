@@ -1,0 +1,4 @@
+id_annuity|num_issueAge|fec_issueDate|fec_currentDate|mnt_annualPayment|num_originalTotalYearsPayments|num_originalCertainYears|num_extraPymt
+1|45|31/12/1992|31/12/2005|5150000|40|25|10
+2|55|31/12/1997|31/12/2005|4700000|35|20|5
+3|50|31/12/2002|31/12/2005|4300000|25|10|10
