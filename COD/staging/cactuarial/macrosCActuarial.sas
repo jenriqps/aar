@@ -178,3 +178,72 @@
 
 %mend;
 
+* Versión con PROC IML;
+
+%macro reserve_v2(id_annuity=,val_i=);
+* id_annuity: Identificador de anualidad;
+* val_i: valor de la tasa de interés para calcular la reserva;
+
+	* Obtenemos los parámetros de la anualidad;
+	proc sql noprint;
+		/* Edad alcanzada a la fecha actual */
+		select num_issueAge + intck('year',fec_issueDate,fec_currentDate) into: x
+		from ext.asegurados
+		where id_annuity = &id_annuity.
+		;
+		/* Plazo al vencimiento en la fecha actual */
+		select num_originalTotalYearsPayments - intck('year',fec_issueDate,fec_currentDate) into: n
+		from ext.asegurados
+		where id_annuity = &id_annuity.
+		;	
+		select mnt_annualPayment format 16.6 into: pymt
+		from ext.asegurados
+		where id_annuity = &id_annuity.
+		;
+		select num_originalCertainYears - intck('year',fec_issueDate,fec_currentDate) into: n_cert
+		from ext.asegurados
+		where id_annuity = &id_annuity.
+		;	
+		select num_extraPymt into: n_extraPymt
+		from ext.asegurados
+		where id_annuity = &id_annuity.
+		;
+
+	quit;
+	
+	%put Plazo &n. || Edad alcanzada &x. || Pago &pymt. || Plazo original de los pagos ciertos &n_cert.;
+
+	proc iml;	
+		edit ext.TABLAMORTALIDADv2;
+		read all var _NUM_ into lt[colname=numVars];
+		close ext.TABLAMORTALIDADv2; 	
+	
+		start p_sprv(x,tm,n);
+		/*
+		Probabilidad de sobrevivencia
+		x: edad
+		tm: nombre del dataset de la tabla de mortalidad
+		n: temporalidad (en años)
+		*/
+			p=tm[x+n-40+1,4]/tm[x-40+1,4];
+			return(p);
+		finish;
+	run;
+	
+	
+	
+	
+	
+	
+	/* Limpieza de la librería work */
+	
+	data work.res_id_&id_annuity.;
+		set work.reserves8;
+	run;
+	
+	proc datasets lib=work nolist;
+		delete reserves: resaux:;
+	run;
+
+%mend;
+

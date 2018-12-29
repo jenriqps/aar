@@ -17,6 +17,9 @@ run;
 proc datasets lib=work kill nolist;
 run;
 
+
+FILENAME REFFILE "&root./DAT/extraccion/insumos/insumos.xlsx";
+
 /* Input 5 */
 /*
  * Catálogo de activos financieros
@@ -55,8 +58,6 @@ run;
 /*
  * Tabla con los asegurados
  */
-
-FILENAME REFFILE "&root./DAT/extraccion/insumos/insumos.xlsx";
 
 PROC IMPORT DATAFILE=REFFILE
 	DBMS=xlsx
