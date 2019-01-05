@@ -228,22 +228,82 @@
 			p=tm[x+n-40+1,4]/tm[x-40+1,4];
 			return(p);
 		finish;
+		* Matriz que contiene los cálculos;
+		res=J(&n.+1,10);
+		*print res;
+		do i=0 to &n.;
+			res[i+1,1]=i;
+			res[i+1,2]=&x.+res[i+1,1]-1;
+			res[i+1,3]=p_sprv(&x.,lt,res[i+1,1]);			
+			* Pagos ciertos;
+			if res[i+1,1] > 0 & res[i+1,1] <= &n_cert. then res[i+1,4] = &pymt.;
+			else res[i+1,4] = 0;
+			* Pagos contingentes;
+			if res[i+1,1] > &n_cert. & res[i+1,1] < &n. then res[i+1,5] = &pymt.*res[i+1,3];
+			else if res[i+1,1] = &n. then res[i+1,5]=(&pymt.+&n_extraPymt.*&pymt.)*res[i+1,3];
+			else res[i+1,5]=0;
+			* Total de pagos;
+			res[i+1,10]=res[i+1,4]+res[i+1,5];
+			* Factores de descuento;
+			res[i+1,6]=(1+&val_i.)**-res[i+1,1];
+		end;
+		
+		do i=0 to &n.;
+			
+			if i+1+1 <= &n.+1 then;
+				do;
+					* Valores presentes de los pagos ciertos;
+					res[i+1,7]=res[(i+1+1):(&n.+1),4]`*res[(i+1+1):(&n.+1),6]*(1+&val_i.)**res[i+1,1];	
+					* Valores presentes de los pagos contingentes;
+					res[i+1,8]=res[(i+1+1):(&n.+1),5]`*res[(i+1+1):(&n.+1),6]*(1+&val_i.)**res[i+1,1];	
+				end;
+			else 
+				do;
+					res[i+1,7]=0;	
+					res[i+1,8]=0;			
+				end;
+			res[i+1,9]=res[i+1,7]+res[i+1,8];			
+		end;
+		
+		
+		*print res;
+		
+	* Enviamos los resultados a un data set;
+	create work.res from res;
+	append from res;
+	close work.res;		
+		
 	run;
 	
-	
+
 	
 	
 	
 	
 	/* Limpieza de la librería work */
 	
-	data work.res_id_&id_annuity.;
-		set work.reserves8;
+	data work.res_id_&id_annuity.(drop=col:);
+		format mnt_reserveCertain mnt_reserveLifeCont comma16.2;
+		set work.res;
+		id=&id_annuity.;	
+		num_year = col1;
+		num_attainedAge = col2;
+		val_cumPx = col3;
+		val_cumIntFact = col6;
+		mnt_projPymtCert = col4;
+		mnt_projPymtCont = col5;
+		mnt_projPymtTot = col10;
+		mnt_reserveCertain = col7;
+		mnt_reserveLifeCont = col8;
+		mnt_reserveTotal = col9;
 	run;
+	
 	
 	proc datasets lib=work nolist;
 		delete reserves: resaux:;
 	run;
+	
+	
 
 %mend;
 

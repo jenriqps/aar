@@ -28,15 +28,18 @@ quit;
 %reserve_v2(id_annuity=1,val_i=&i_reserve.)
 %reserve_v2(id_annuity=2,val_i=&i_reserve.)
 %reserve_v2(id_annuity=3,val_i=&i_reserve.)
+;
 
 
 /* Unimos todas las reservas en un tabla, máxima granularidad */ 
+
 data cact.reserve;
 	set work.res_id_:;
 run;
 
 proc datasets lib=work kill nolist;
 run;
+
 
 
 /* Agregamos las reservas por anio */
