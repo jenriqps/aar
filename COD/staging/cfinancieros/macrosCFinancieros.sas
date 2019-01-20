@@ -372,11 +372,13 @@ Cálculo de precios de activos con SAS/IML
 	
 	%put Number of remaining years=&num_remainingYears. || Annual yield=&pct_annualYield. || Percentage of portfolio=&pct_portfolio. || Type of asset:&cod_asset.;
 	
+	/*
 	data work.assets1;		
 		do num_year=0 to &num_remainingYears.;
 			output;
 		end;
 	run;
+	*/
 	
 	/* Bono cuponado, callable */
 
@@ -388,8 +390,8 @@ Cálculo de precios de activos con SAS/IML
 				read all var _NUM_ into curv[colname=numVars];
 				close work.curve_int;
 				
-				asset = J(&num_remainingYears.+1,6,0);
-				print asset;
+				asset = J(&num_remainingYears.+100,6,0);
+				*print asset;
 				do i=0 to &num_remainingYears.;
 					* num_year;
 					asset[i+1,1]=i;
@@ -409,7 +411,7 @@ Cálculo de precios de activos con SAS/IML
 					if asset[i+1,1] = 0 then asset[i+1,6]=0;
 					else asset[i+1,6] = asset[i,5]*&pct_annualYield.+(-asset[i+1,5]+asset[i,5]);
 				end;
-				print asset;
+				*print asset;
 				
 				* Enviamos los resultados a un data set;
 				create work.assets5 from asset;
@@ -419,6 +421,7 @@ Cálculo de precios de activos con SAS/IML
 			run;
 
 			data work.asset_id_&id_asset._&sim.(keep=cve_scenario id num_year val_assetValue val_cashFlow);
+				format num_year 10. val_assetValue val_cashFlow comma16.2;
 				set work.assets5;
 				num_year = col1;
 				val_assetValue = col5;
@@ -432,21 +435,38 @@ Cálculo de precios de activos con SAS/IML
 
 	%if &cod_asset. = 2 %then
 		%do;
-			data work.assets2;
-				set work.assets1;
-				if num_year lt &num_remainingYears. then
-				val_assetValue = &pct_portfolio.*&valTotPort.*(1+&pct_annualYield.)**num_year;
-				if num_year = (&num_remainingYears.) then
-					val_cashFlow = &pct_portfolio.*&valTotPort.*(1+&pct_annualYield.)**num_year;
-				else 
-					val_cashFlow = 0;
+		
+			proc iml;
+
+				asset = J(&num_remainingYears.+1,3,0);
+				*print asset;
+				do i=0 to &num_remainingYears.;
+					* num_year;
+					asset[i+1,1]=i;					
+					if asset[i+1,1] < &num_remainingYears. then
+					asset[i+1,2] = &pct_portfolio.*&valTotPort.*(1+&pct_annualYield.)**asset[i+1,1];
+					if asset[i+1,1]  = &num_remainingYears. then
+						asset[i+1,3] = &pct_portfolio.*&valTotPort.*(1+&pct_annualYield.)**asset[i+1,1];
+					else 
+						asset[i+1,3] = 0;
+				end;
+				*print asset;
 				
+				* Enviamos los resultados a un data set;
+				create work.assets2 from asset;
+				append from asset;
+				close work.assets2;					
 			run;
 			
+			
 			data work.asset_id_&id_asset._&sim.(keep=cve_scenario id num_year val_assetValue val_cashFlow);
+				format num_year 10. val_assetValue val_cashFlow comma16.2;			
 				set work.assets2;
 				cve_scenario = &sim.;
 				id = &id_asset.;
+				num_year = col1;
+				val_assetValue = col2;
+				val_cashFlow = col3;
 			run;
 		%end;
 	
@@ -454,15 +474,7 @@ Cálculo de precios de activos con SAS/IML
 
 	%if &cod_asset. = 3 %then
 		%do;
-			proc sql;
-				create table work.assets2 as
-					select 
-						a.*
-						, sum(b.val_int,&spreadMort.) as val_curAvaiRateMort
-					from work.assets1 a left join work.curve_int b on a.num_year = b.num_year	
-					;
-			quit;
-			
+		
 			proc sql noprint;
 			/* Regular */
 				select val_parametro into: prePymt0
@@ -479,66 +491,68 @@ Cálculo de precios de activos con SAS/IML
 				where id_parameter=8
 				;				
 			quit;
-			
-			data work.assets3;
-				set work.assets2;
-				val_extAnPrePymt = min(1,max(0,&prePymt1.*(&pct_annualYield.-val_curAvaiRateMort)/&prePymt2.));
-				mnt_outsPrincipalEOY = 0;
-				mnt_interestPymt = 0;
-				mnt_principalPymt = 0;
-				mnt_totalPymt = 0;	
-				mnt_prePymt = 0;
-				mnt_totalCF = 0;
-			run;			
-			
-			%put pct_portfolio = &pct_portfolio. valTotPort = &valTotPort.;
-			
-			data work.assets4;
-				set work.assets3;
-				if num_year=0 then
-				do;
-					mnt_outsPrincipalEOY = &pct_portfolio.*&valTotPort.;
-					val_cashFlow = mnt_outsPrincipalEOY;
-					output;
-				end;
-				else
-					output;
-			run;
 		
-			
-			%do i=1 %to &num_remainingYears.;			
-				data work.aux(where=(num_year=&i.));
-					set work.assets4;
-					if num_year <= &i. then
+			proc iml;
+				edit work.curve_int;
+				read all var _NUM_ into curv[colname=numVars];
+				close work.curve_int;
+				asset = J(&num_remainingYears.+1,12,0);
+				*print asset;
+				do i=0 to &num_remainingYears.;
+					* num_year;
+					asset[i+1,1]=i;		
+					* val_curAvaiRateMort;
+					asset[i+1,2]=curv[i+1,2]+&spreadMort.;	
+					* val_extAnPrePymt;
+					asset[i+1,3]=min(1,max(0,&prePymt1.*(&pct_annualYield.-asset[i+1,2])/&prePymt2.));					
+					if asset[i+1,1]=0 then;
 						do;
-							mnt_interestPymt = lag(mnt_outsPrincipalEOY)*&pct_annualYield.;
-							mnt_totalPymt = mort(lag(mnt_outsPrincipalEOY),.,&pct_annualYield.,&num_remainingYears.+1-num_year);
-							mnt_principalPymt = sum(mnt_totalPymt,-mnt_interestPymt);
-							mnt_prePymt = (val_extAnPrePymt+&prePymt0.)*(lag(mnt_outsPrincipalEOY)-mnt_principalPymt);
-							mnt_totalCF = sum(mnt_totalPymt,mnt_prePymt);						 
-							mnt_outsPrincipalEOY = sum(sum(lag(mnt_outsPrincipalEOY),-mnt_principalPymt,-mnt_prePymt),&pct_portfolio.*&valTotPort.*(num_year = 0));
-							val_assetValue = mnt_outsPrincipalEOY;
-							val_cashFlow = mnt_totalCF;
-							output;
+							* mnt_outsPrincipalEOY;
+							asset[i+1,4] = &pct_portfolio.*&valTotPort.;
+							* val_assetValue ;
+							asset[i+1,11] = asset[i+1,4];
+							* val_cashFlow;
+							asset[i+1,5]  = 0;
 						end;
-				run;
+					else
+						do;
+							* mnt_interestPymt;
+							asset[i+1,6] = asset[i,4]*&pct_annualYield.;
+							* mnt_totalPymt;
+							asset[i+1,7] = mort(asset[i,4],.,&pct_annualYield.,&num_remainingYears.+1-asset[i+1,1]);
+							* mnt_principalPymt;
+							asset[i+1,8] = sum(asset[i+1,7],-asset[i+1,6]);
+							* mnt_prePymt; 
+							asset[i+1,9] = (asset[i+1,3]+&prePymt0.)*(asset[i,4]-asset[i+1,8]);
+							* mnt_totalCF;
+							asset[i+1,10] = sum(asset[i+1,7],asset[i+1,9]);	
+							* mnt_outsPrincipalEOY ;
+							asset[i+1,4] = sum(sum(asset[i,4],-asset[i+1,8],-asset[i+1,9]),0);
+							* val_assetValue;
+							asset[i+1,11] = asset[i+1,4];
+							* val_cashFlow ;
+							asset[i+1,5] = asset[i+1,10];						
+						end;
+					
+				end;
+				*print asset;
 				
-				
-				data work.assets4;
-					update work.assets4 aux;
-					by num_year;					
-				run;
+				* Enviamos los resultados a un data set;
+				create work.assets4 from asset;
+				append from asset;
+				close work.assets4;					
+			run;
 				
 				data work.asset_id_&id_asset._&sim.(keep= cve_scenario id num_year val_assetValue val_cashFlow);
 					format num_year 10. val_assetValue val_cashFlow comma16.2;
 					set work.assets4;
 					cve_scenario = &sim.;
 					id = &id_asset.;
-					val_assetValue = mnt_outsPrincipalEOY;
-					val_cashFlow = mnt_totalCF;
+					num_year = col1;					
+					val_assetValue = col11;
+					val_cashFlow = col5;
 				run;
 				
-			%end;
 
 			
 		
@@ -555,4 +569,58 @@ Cálculo de precios de activos con SAS/IML
 
 	
 %mend;
+
+
+%macro simAllAssets_v2(maxSim=);
+
+	proc sql;
+		create table work.scenarios as
+		select distinct cve_scenario
+		from ext.esctasasinteres;
+		;
+	quit;
+	
+	
+	data _null_;
+		set work.scenarios;
+		nom = 'ns_'||compress(put(_n_,3.));
+		call symputx(nom,cve_scenario,'G');
+	run;
+	
+
+	%do k=1 %to &maxSim.;
+	
+		data work.curve_int(keep=num_year val_int);	
+			set ext.esctasasinteres(where=(cve_scenario=&&&&ns_&&k.));
+			val_int=pct_rate;
+		run;
+		
+		proc sql noprint;		
+			select pct_annualYield format 10.6 into: pct_annualYield
+			from ext.activosfinancieros
+			where id_asset = 1
+			;
+		quit;
+
+		
+		proc sql;
+			insert into work.curve_int
+				set num_year = 0,
+					val_int = &pct_annualYield.
+				;
+		quit;
+		
+		proc sort data=work.curve_int;
+			by num_year;
+		run;
+		
+		%assets_v2(sim=&k.,id_asset=1,curve=curve_int,spread=&i_spreadAAA.,callRate=&i_callRate.,valTotPort=&valTotPort.,spreadMort=&spreadMort.)
+		%assets_v2(sim=&k.,id_asset=2,curve=curve_int,spread=&i_spreadAAA.,callRate=&i_callRate.,valTotPort=&valTotPort.,spreadMort=&spreadMort.)		
+		%assets_v2(sim=&k.,id_asset=3,curve=curve_int,spread=&i_spreadAAA.,callRate=&i_callRate.,valTotPort=&valTotPort.,spreadMort=&spreadMort.)
+		
+
+	%end;
+
+%mend;
+
 

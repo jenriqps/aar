@@ -229,7 +229,7 @@
 			return(p);
 		finish;
 		* Matriz que contiene los cálculos;
-		res=J(&n.+1,10);
+		res=J(&n.+100,10,0);
 		*print res;
 		do i=0 to &n.;
 			res[i+1,1]=i;

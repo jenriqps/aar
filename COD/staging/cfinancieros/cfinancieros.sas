@@ -64,35 +64,35 @@ quit;
 
 /* Escenario base */
 
+
 %assets_v2(sim=0,id_asset=1,curve=curve_int,spread=&i_spreadAAA.,callRate=&i_callRate.,valTotPort=&valTotPort.,spreadMort=&spreadMort.)
-/*
-%assets(sim=0,id_asset=2,curve=curve_int,spread=&i_spreadAAA.,callRate=&i_callRate.,valTotPort=&valTotPort.,spreadMort=&spreadMort.)
-%assets(sim=0,id_asset=3,curve=curve_int,spread=&i_spreadAAA.,callRate=&i_callRate.,valTotPort=&valTotPort.,spreadMort=&spreadMort.)
-*/
+%assets_v2(sim=0,id_asset=2,curve=curve_int,spread=&i_spreadAAA.,callRate=&i_callRate.,valTotPort=&valTotPort.,spreadMort=&spreadMort.)
+%assets_v2(sim=0,id_asset=3,curve=curve_int,spread=&i_spreadAAA.,callRate=&i_callRate.,valTotPort=&valTotPort.,spreadMort=&spreadMort.)
+
+
 
 /* Escenarios alternativos */
-/*
-%simAllAssets(maxSim=100)
-*/
+
+%simAllAssets_v2(maxSim=100)
+;
 
 
 
 /* Unimos todas las reservas en un tabla, máxima granularidad */ 
-/*
+
 data cfin.asset;
 	set work.asset_id_:;
 run;
-*/
 
-/*
+
+
 proc datasets lib=work kill nolist;
 run;
-*/
+
 
 
 
 /* Agregamos por año */
-/*
 proc sql;
 	create table cfin.assets_year as
 		select 
@@ -115,5 +115,5 @@ proc sql;
 		;
 quit;
 
-*/
+
 
