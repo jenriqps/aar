@@ -264,7 +264,8 @@
 			* num_year;
 			prft[i+1,1]=i;
 			* val_scenTrRate;
-			prft[i+1,2]=curv[i+1,2];
+			if prft[i+1,1]=0 then prft[i+1,2]=.; 
+			else prft[i+1,2]=curv[i,2];			
 			* cve_scenario;
 			prft[i+1,3]=&sim.;
 			* mnt_reserveTotal;
@@ -278,15 +279,15 @@
 			prft[i+1,7]=acf[i+1,3];
 			
 			* mnt_expenses;
-			if prft[i+1,5] > 0 then aux=1; else aux=0;
-			prft[i+1,8]=&annExpenses.*aux;
+			if prft[i+1,5] > 0 then prft[i+1,8]=&annExpenses.; else prft[i+1,8]=0;
 			
 			* mnt_cbIntDuringYear;
 			if prft[i+1,1] > 0 then
 				do;
-					if prft[i,9] < 0 then aux1=1; else aux1=0;
-					if prft[i,9] >= 0 then aux2=1; else aux2=0;			
-					prft[i+1,10]=sum(prft[i,9]*sum(prft[i+1,2],&negativeBal.)*aux1,prft[i,9]*sum(prft[i+1,2],&positiveBal.)*aux2);
+					if prft[i,9] < 0 then 
+					prft[i+1,10]=prft[i,9]*sum(prft[i+1,2],&negativeBal.);
+					else if prft[i,9] >= 0 then 
+					prft[i+1,10]=prft[i,9]*sum(prft[i+1,2],&positiveBal.); 	
 				end;			
 			* mnt_cfDuringYear;
 			prft[i+1,11]=sum(prft[i+1,7],-prft[i+1,5],-prft[i+1,8],prft[i+1,10]);

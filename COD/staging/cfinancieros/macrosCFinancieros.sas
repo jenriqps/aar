@@ -406,7 +406,7 @@ Cálculo de precios de activos con SAS/IML
 					if i>0 then; if asset[i,4]=1 then asset[i+1,4]=1;
 					* Asset value;
 					if asset[i+1,4]=1 then asset[i+1,5]=0;
-					else asset[i+1,5]=&pct_portfolio.*&valTotPort.;
+					else if asset[i+1,1] < &num_remainingYears. then asset[i+1,5]=&pct_portfolio.*&valTotPort.; else asset[i+1,5]=0;
 					* Cashflow;
 					if asset[i+1,1] = 0 then asset[i+1,6]=0;
 					else asset[i+1,6] = asset[i,5]*&pct_annualYield.+(-asset[i+1,5]+asset[i,5]);
