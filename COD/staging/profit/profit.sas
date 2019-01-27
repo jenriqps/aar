@@ -62,6 +62,12 @@ proc sql;
 	;
 quit;
 
+proc datasets library=prft;
+	modify profit;
+		label
+			num_year="Year"
+			mnt_pvAnnualProfit="PV of Annual Profits";			
+quit;
 
 
 
