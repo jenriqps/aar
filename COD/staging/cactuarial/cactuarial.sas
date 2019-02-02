@@ -61,4 +61,19 @@ proc sql;
 		;
 quit;
 
-
+proc datasets library=cact;
+	modify reserve_year;
+	format 
+		mnt_reserveTotal dollar32.;
+	label 
+		num_year="Year" 
+		mnt_reserveTotal="Total Reserve"
+		;
+	modify projcf_year;
+	format 
+		mnt_projPymtTot dollar32.;
+	label 
+		num_year="Year" 
+		mnt_projPymtTot="Total Projected Payments"
+		;	
+quit;

@@ -171,7 +171,7 @@ proc template;
 	end;
 run;
 
-title "Pie Chart";
+title "Type of financial asset and callability";
 proc sgrender template=SASStudio.Pie data=EXT.ACTIVOSFINANCIEROS;
 run;
 
@@ -192,6 +192,37 @@ proc sgplot data=ext.activosfinancieros;
 	vbar dsc_asset  / response=num_remainingYears group=cod_asset;
 	yaxis grid;
 run;
+
+proc template;
+	define statgraph SASStudio.Pie2;
+		begingraph;
+		layout region;
+		piechart category=cv_currency response=pct_portfolio / group=flg_callable 
+			groupgap=2% datalabellocation=inside;
+		endlayout;
+		endgraph;
+	end;
+run;
+
+title "Currency of the financial asset and callability";
+proc sgrender template=SASStudio.Pie2 data=EXT.ACTIVOSFINANCIEROS;
+run;
+
+proc template;
+	define statgraph SASStudio.Pie3;
+		begingraph;
+		layout region;
+		piechart category=tx_country response=pct_portfolio  / group=flg_callable 
+			groupgap=2% datalabellocation=inside;
+		endlayout;
+		endgraph;
+	end;
+run;
+
+title "Country of the issuer and callability of the financial assets";
+proc sgrender template=SASStudio.Pie3 data=EXT.ACTIVOSFINANCIEROS;
+run;
+
 
 ods graphics / reset width=8in height=4.8in imagemap noborder;
 proc sgmap plotdata=EXT.ACTIVOSFINANCIEROS;

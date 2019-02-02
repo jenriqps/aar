@@ -14,6 +14,27 @@ ods graphics / reset width=6.4in height=4.8in imagemap noborder;
 %include "&root./COD/staging/profit/configuracion.sas";
 %include "&root./COD/staging/profit/macrosProfit.sas";
 
+ods graphics / reset imagemap noborder;
+title "Reserves";
+title2 "by Year";
+proc sgplot data=cact.reserve_year;
+	needle x=num_year y=mnt_reserveTotal/lineattrs=(color=pink pattern=2 thickness=1) markers markerattrs=(color=purple SYMBOL=circlefilled); 
+	xaxis grid;
+	yaxis grid;
+run;
+title;
+
+ods graphics / reset imagemap noborder;
+title "Projected Payments";
+title2 "by Year";
+proc sgplot data=cact.projcf_year;
+	needle x=num_year y=mnt_projPymtTot/lineattrs=(color=yellow pattern=2 thickness=1) markers markerattrs=(color=orange SYMBOL=circlefilled); 
+	xaxis grid;
+	yaxis grid;
+run;
+title;
+
+
 ods graphics / reset width=8in height=9in imagemap noborder;
 title "Investment Income";
 title2 "by Year";

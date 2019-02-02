@@ -32,14 +32,14 @@ PROC IMPORT DATAFILE=REFFILE
 	SHEET="catActFin";
 RUN;
 
-data ext.catActFin;
+data ext.catActFin(label="Catalog of Financial Assets");
 	label
 		cod_asset = 'Code of the asset'
 		dsc_asset = 'Description of the asset';
 	set work.catActFin;
 run;
 
-proc sql;
+proc sql noprint;
 	select put(cod_asset,2.)||"="||"'"||trim(dsc_asset)||"'" into :var separated by " "
 	from ext.catActFin
 	;
@@ -66,7 +66,7 @@ PROC IMPORT DATAFILE=REFFILE
 	sheet="asegurados";
 RUN;
 
-data ext.asegurados;
+data ext.asegurados(label="Characteristics of the annuities");
 	format mnt_annualPayment comma30.2 fec_issueDate fec_currentDate date9.;
 	label 
 		id_annuity = 'Annuities'
@@ -93,7 +93,7 @@ PROC IMPORT DATAFILE=REFFILE
 RUN;
 
 
-data ext.parametros;
+data ext.parametros(label="Parameters");
 	label 
 		id_parameter = 'Identificador del parámetro'
 		dsc_parameter = 'Descripción del parámetro'
@@ -119,7 +119,7 @@ proc format lib=ext;
 	0="No";
 run;
 
-data ext.activosFinancieros;
+data ext.activosFinancieros(label="Characteristics of the Financial Assets");
 	length tx_country $50.;
 	format
 	pct_portfolio pct_annualYield percentn10.2
@@ -134,10 +134,10 @@ data ext.activosFinancieros;
 		pct_portfolio = 'Porcentaje del portafolio'	
 		cod_asset = 'Type of financial asset'
 		flg_callable = 'Is the bond callable?'
-		tx_country = "Country"
+		tx_country = "Country of the issuer"
 		cv_currency = "Currency"
-		num_latitude = "Latitude"
-		num_longitude = "Longitude"
+		num_latitude = "Latitude of the issuer"
+		num_longitude = "Longitude of the issuer"
 		;
 	set work.activosFinancieros;
 run;
@@ -155,7 +155,7 @@ PROC IMPORT DATAFILE=REFFILE
 RUN;
 
 
-data ext.tablaMortalidad;
+data ext.tablaMortalidad(label="Mortality Table");
 	label 
 		val_age = 'Attained age (years)'
 		val_1000qx = '1000 q_x'
@@ -175,7 +175,7 @@ PROC IMPORT DATAFILE=REFFILE
 	SHEET="escTasasInteres";
 RUN;
 
-data ext.escTasasInteres;
+data ext.escTasasInteres(label="Scenarios of the Interest Rates");
 	format pct_rate percentn10.2;
 	label
 		cve_scenario = 'Scenario'
@@ -186,7 +186,7 @@ run;
 
 
 /* Limpiamos la memoria */
-		
-	proc datasets lib=work kill nolist;
-	run;
+	
+proc datasets lib=work kill nolist;
+run;
 	
