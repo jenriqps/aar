@@ -120,19 +120,24 @@ proc format lib=ext;
 run;
 
 data ext.activosFinancieros;
+	length tx_country $50.;
 	format
 	pct_portfolio pct_annualYield percentn10.2
 	flg_callable sino.
 	cod_asset asset.;
 	label 
-		id_asset = 'Identificador del activo'
-		dsc_asset = 'Descripción del activo'
+		id_asset = 'Asset ID'
+		dsc_asset = 'Asset Description'
 		num_remainingYears='Remaining Years'
 		num_YrsCallProtection = 'Yrs of Call Protection'
 		pct_annualYield = 'Annual Yield'
 		pct_portfolio = 'Porcentaje del portafolio'	
 		cod_asset = 'Type of financial asset'
 		flg_callable = 'Is the bond callable?'
+		tx_country = "Country"
+		cv_currency = "Currency"
+		num_latitude = "Latitude"
+		num_longitude = "Longitude"
 		;
 	set work.activosFinancieros;
 run;

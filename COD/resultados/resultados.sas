@@ -15,7 +15,43 @@ ods graphics / reset width=6.4in height=4.8in imagemap noborder;
 %include "&root./COD/staging/profit/macrosProfit.sas";
 
 ods graphics / reset width=8in height=9in imagemap noborder;
-title "Profit";
+title "Investment Income";
+title2 "by Year";
+proc sgpanel data=prft.profit;
+	panelby num_year / uniscale=all columns=3 rows=10;
+ 	histogram mnt_investIncome / fillattrs=(color=red transparency=0.8);
+run;
+title;
+
+title "Benefits plus Expenses";
+title2 "by Year";
+proc sgpanel data=prft.profit;
+	panelby num_year / uniscale=all columns=3 rows=10;
+ 	histogram mnt_benefitsPlusExpenses / fillattrs=(color=red transparency=0.8);
+run;
+title;
+
+
+
+title "Increase in Reserves";
+title2 "by Year";
+proc sgpanel data=prft.profit;
+	panelby num_year / uniscale=all columns=3 rows=10;
+ 	histogram mnt_increaseReserves / fillattrs=(color=red transparency=0.8);
+run;
+title;
+
+title "Annual Profits";
+title2 "by Year";
+proc sgpanel data=prft.profit;
+	panelby num_year / uniscale=all columns=3 rows=10;
+ 	histogram mnt_annualProfit / fillattrs=(color=red transparency=0.8);
+run;
+title;
+
+
+title "Present Value of Annual Profits";
+title2 "by Year";
 proc sgpanel data=prft.profit;
 	panelby num_year / uniscale=all columns=3 rows=10;
  	histogram mnt_pvAnnualProfit / fillattrs=(color=blue transparency=0.8);
@@ -68,7 +104,8 @@ proc sql;
 quit;
 
 ods graphics / reset width=6.4in height=6in imagemap noborder;
-title 'Histograma, escenario base, VaR y CTE';
+title 'Histograma';
+title2 'Escenario base, VaR y CTE';
 proc sgplot data=prft.pvprofits(where=(cve_scenario ne 0));
  	histogram pvAnnualProfit / fillattrs=(color=blue transparency=0.97);
  	density pvAnnualProfit / lineattrs=(color=red);

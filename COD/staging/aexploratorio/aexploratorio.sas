@@ -193,7 +193,16 @@ proc sgplot data=ext.activosfinancieros;
 	yaxis grid;
 run;
 
-
+ods graphics / reset width=8in height=4.8in imagemap noborder;
+proc sgmap plotdata=EXT.ACTIVOSFINANCIEROS;
+	openstreetmap;
+	title 'Investments by Country';
+	bubble x=num_longitude y=num_latitude size=pct_portfolio/ group=tx_country 
+		name="bubblePlot";
+	keylegend "bubblePlot" / title='Country:';
+run;
+ods graphics / reset;
+title;
 
 
 
