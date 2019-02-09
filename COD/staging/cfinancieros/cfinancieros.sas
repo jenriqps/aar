@@ -115,5 +115,17 @@ proc sql;
 		;
 quit;
 
+proc datasets library=cfin;
+	modify asset;
+	format 
+		val_assetValue val_cashFlow dollar32.;
+	label 
+		num_year="Year" 
+		cve_scenario = "Scenario"
+		id = "Asset ID"
+		val_assetValue = "Asset Value"
+		val_cashFlow = "Cash Flow"
+		;
+quit;
 
 

@@ -14,8 +14,11 @@ ods graphics / reset width=6.4in height=4.8in imagemap noborder;
 %include "&root./COD/staging/profit/configuracion.sas";
 %include "&root./COD/staging/profit/macrosProfit.sas";
 
+options  fmtsearch=(ext);
+
+
 ods graphics / reset imagemap noborder;
-title "Reserves";
+title "Liabilities - Reserves";
 title2 "by Year";
 proc sgplot data=cact.reserve_year;
 	needle x=num_year y=mnt_reserveTotal/lineattrs=(color=pink pattern=2 thickness=1) markers markerattrs=(color=purple SYMBOL=circlefilled); 
@@ -25,7 +28,7 @@ run;
 title;
 
 ods graphics / reset imagemap noborder;
-title "Projected Payments";
+title "Liabilities - Projected Payments";
 title2 "by Year";
 proc sgplot data=cact.projcf_year;
 	needle x=num_year y=mnt_projPymtTot/lineattrs=(color=yellow pattern=2 thickness=1) markers markerattrs=(color=orange SYMBOL=circlefilled); 
@@ -34,9 +37,95 @@ proc sgplot data=cact.projcf_year;
 run;
 title;
 
+* Asset #1;
+
+proc sort data=cfin.asset(where=(id=1 and num_year>0)) out=cfin.assetSort;
+	by cve_scenario num_year;
+run;
+
+data cfin.asset2paths;
+	label num_flag="Is the asset value equal to zero? (0: No, 1: Yes, .: It does not exist))";
+	set cfin.assetSort(where=(id=1 and num_year>0 and num_year<13));
+	if val_assetValue > 0 then num_flag = 0; 
+	if val_assetValue = 0 and lag(num_flag)=0 and cve_scenario=lag(cve_scenario) then num_flag=1; 
+run;
+
+ods graphics / width=10in height=6in imagemap noborder;
+title "Assets - Paths of asset value scenarios of Asset #1 (Coupon bond)";
+title2 "Is the asset value equal to zero? (0: No, 1: Yes, .: It does not exist))";
+%sankeybarchart
+ (data=cfin.asset2paths
+ ,subject=cve_scenario
+ ,yvar=num_flag
+ ,xvar=num_year
+ ,barwidth=0.5
+ ,completecases=no
+ ,debug=no 
+ );
+
+ods graphics / reset imagemap noborder;
+title 'Assets - Heatmap of the asset value scenarios of Asset #1 (Coupon bond)';
+proc sgplot data=cfin.asset(where=(id=1 and num_year>0));
+	heatmap x=num_year y=val_assetValue / colorstat=freq nxbins=14 /*nybins=10*/ showybins showxbins;
+	xaxis grid;
+	yaxis grid;	
+run;
+title;
+
+ods graphics / reset imagemap noborder;
+title 'Assets - Heatmap of the cash flow scenarios of Asset #1 (Coupon bond)';
+proc sgplot data=cfin.asset(where=(id=1 and num_year>0));
+	heatmap x=num_year y=val_cashFlow / colorstat=freq nxbins=14 /*nybins=10*/ showybins showxbins;
+	xaxis grid;
+	yaxis grid;
+run;
+title;
+
+* Asset #2;
+ods graphics / reset imagemap noborder;
+title 'Assets - Paths of asset value scenarios of Asset #2 (Zero-coupon bond)';
+proc sgplot data=cfin.asset(where=(id=2 and num_year>0));
+	series x=num_year y=val_assetValue / group=cve_scenario;
+run;
+title;
+
+ods graphics / reset imagemap noborder;
+title 'Assets - Heatmap of the asset value scenarios of Asset #2 (Zero-coupon bond)';
+proc sgplot data=cfin.asset(where=(id=2 and num_year>0));
+	heatmap x=num_year y=val_assetValue / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
+	xaxis grid;
+	yaxis grid;
+run;
+title;
+
+ods graphics / reset imagemap noborder;
+title 'Assets - Heatmap of the cash flow scenarios of Asset #2 (Zero-coupon bond)';
+proc sgplot data=cfin.asset(where=(id=2 and num_year>0));
+	heatmap x=num_year y=val_cashFlow / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
+run;
+title;
+
+* Asset #3;
+
+ods graphics /reset imagemap noborder;
+title 'Assets - Heatmap of the asset value scenarios of Asset #3 (Mortgage bond)';
+proc sgplot data=cfin.asset(where=(id=3 and num_year>0));
+	heatmap x=num_year y=val_assetValue / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
+	xaxis grid;
+	yaxis grid;
+run;
+title;
+
+ods graphics / reset imagemap noborder;
+title 'Assets - Heatmap of the cash flow scenarios of Asset #3 (Mortgage bond)';
+proc sgplot data=cfin.asset(where=(id=3 and num_year>0));
+	heatmap x=num_year y=val_cashFlow / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
+run;
+title;
+
 
 ods graphics / reset width=8in height=9in imagemap noborder;
-title "Investment Income";
+title "Profit - Investment Income";
 title2 "by Year";
 proc sgpanel data=prft.profit;
 	panelby num_year / uniscale=all columns=3 rows=10;
@@ -44,7 +133,7 @@ proc sgpanel data=prft.profit;
 run;
 title;
 
-title "Benefits plus Expenses";
+title "Profit - Benefits plus Expenses";
 title2 "by Year";
 proc sgpanel data=prft.profit;
 	panelby num_year / uniscale=all columns=3 rows=10;
@@ -54,7 +143,7 @@ title;
 
 
 
-title "Increase in Reserves";
+title "Profit -  Increase in Reserves";
 title2 "by Year";
 proc sgpanel data=prft.profit;
 	panelby num_year / uniscale=all columns=3 rows=10;
@@ -62,7 +151,7 @@ proc sgpanel data=prft.profit;
 run;
 title;
 
-title "Annual Profits";
+title "Profit - Annual Profits";
 title2 "by Year";
 proc sgpanel data=prft.profit;
 	panelby num_year / uniscale=all columns=3 rows=10;
@@ -71,7 +160,7 @@ run;
 title;
 
 
-title "Present Value of Annual Profits";
+title "Profit - Present Value of Annual Profits";
 title2 "by Year";
 proc sgpanel data=prft.profit;
 	panelby num_year / uniscale=all columns=3 rows=10;
