@@ -120,8 +120,32 @@ ods graphics / reset imagemap noborder;
 title 'Assets - Heatmap of the cash flow scenarios of Asset #3 (Mortgage bond)';
 proc sgplot data=cfin.asset(where=(id=3 and num_year>0));
 	heatmap x=num_year y=val_cashFlow / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
+	xaxis grid;
+	yaxis grid;
 run;
 title;
+
+* Todos los activos;
+ods graphics / reset imagemap noborder;
+title 'Total Assets';
+proc sgplot data=cfin.assets_year(where=(num_year>0));
+	heatmap x=num_year y=val_assetTotal / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
+	xaxis grid;
+	yaxis grid;
+run;
+title;
+
+ods graphics / reset imagemap noborder;
+title 'Total Asset Cash Flows';
+proc sgplot data=cfin.assetscf_year(where=(num_year>0));
+	heatmap x=num_year y=val_assetCFTotal / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
+	xaxis grid;
+	yaxis grid;
+run;
+title;
+
+
+
 
 
 ods graphics / reset width=8in height=9in imagemap noborder;

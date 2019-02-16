@@ -126,6 +126,22 @@ proc datasets library=cfin;
 		val_assetValue = "Asset Value"
 		val_cashFlow = "Cash Flow"
 		;
+	modify assets_year;
+	format 
+		val_assetTotal dollar32.;
+	label 
+		num_year="Year" 
+		cve_scenario = "Scenario"
+		val_assetTotal = "Total Asset Value"
+		;	
+	modify assetscf_year;
+	format 
+		val_assetCFTotal dollar32.;
+	label 
+		num_year="Year" 
+		cve_scenario = "Scenario"
+		val_assetCFTotal = "Total Asset Cash Flow"
+		;	
 quit;
 
 

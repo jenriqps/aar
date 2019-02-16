@@ -69,3 +69,11 @@ proc datasets library=prft;
 	mnt_annualProfit="Annual Profits"
 	val_discountFactor="Cumulative Discount Rates";
 quit;
+
+proc datasets library=prft;
+	modify pvprofits;
+	label 
+	cve_scenario= "Scenario"
+	pvAnnualProfit = "PV of Annual Profits"
+	;
+quit;
