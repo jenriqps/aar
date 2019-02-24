@@ -210,30 +210,28 @@ proc univariate data=prft.pvprofits(where=(cve_scenario ne 0));
 run;
 
 proc sql noprint;
-	title 'VaR al 90% de confianza y horizonte hasta que se acaben los pasivos';
-	select estimate format 16.2 into: VaR90
+	select estimate format 16.2 into: VaR10
 	from prft.quantiles
 	where Quantile="10%"
 	;
-	title 'CTE al 90% de confianza y horizonte hasta que se acaben los pasivos';
-	select mean(pvAnnualProfit) format 16.2 into: CTE90
+	select mean(pvAnnualProfit) format 16.2 into: CTE10
 	from prft.pvprofits
 	where cve_scenario ne 0
-	and pvAnnualProfit <= &VaR90.
+	and pvAnnualProfit < &VaR10.
 	;
 quit;
 
 proc sql;
-	title 'VaR al 90% de confianza y horizonte hasta que se acaben los pasivos';
-	select estimate format comma16. into: VaR90f
+	title 'VaR al 10% de confianza y horizonte hasta que se acaben los pasivos';
+	select estimate format comma16. into: VaR10f
 	from prft.quantiles
 	where Quantile="10%"
 	;
-	title 'CTE al 90% de confianza y horizonte hasta que se acaben los pasivos';
-	select mean(pvAnnualProfit) format comma16. into: CTE90f
+	title 'CTE al 10% de confianza y horizonte hasta que se acaben los pasivos';
+	select mean(pvAnnualProfit) format comma16. into: CTE10f
 	from prft.pvprofits
 	where cve_scenario ne 0
-	and pvAnnualProfit <= &VaR90.
+	and pvAnnualProfit < &VaR10.
 	;
 quit;
 
@@ -244,8 +242,8 @@ proc sgplot data=prft.pvprofits(where=(cve_scenario ne 0));
  	histogram pvAnnualProfit / fillattrs=(color=blue transparency=0.97);
  	density pvAnnualProfit / lineattrs=(color=red);
  	refline &pvProfitBase. / axis=x lineattrs=(color=green pattern=15) label = ("Esc. Base=&pvProfitBasef.");
- 	refline &VaR90. / axis=x lineattrs=(color=yellow pattern=15) label = ("VaR90=&VaR90f.");
- 	refline &CTE90. / axis=x lineattrs=(color=red pattern=15) label = ("CTE90=&CTE90f."); 	
+ 	refline &VaR10. / axis=x lineattrs=(color=yellow pattern=15) label = ("VaR10=&VaR10f.");
+ 	refline &CTE10. / axis=x lineattrs=(color=red pattern=15) label = ("CTE10=&CTE10f."); 	
 	xaxis grid;
 	yaxis grid;
 run;
