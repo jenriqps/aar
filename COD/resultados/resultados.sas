@@ -203,35 +203,53 @@ proc sql noprint;
 	where cve_scenario = 0
 	;
 quit;
+/*
+* Cálculo de VaR y CTE
+*/
 
-ods output quantiles=prft.quantiles;
-proc univariate data=prft.pvprofits(where=(cve_scenario ne 0));
+proc sql noprint;
+	* Nivel de confianza;
+	select val_parametro into: confLevel
+	from ext.parametros
+	where id_parameter = 15
+	;
+	* Definición del percentil;
+	select val_parametro into: pctdef
+	from ext.parametros
+	where id_parameter = 16
+	;
+quit;
+
+%put &confLevel.;
+%let confLevel = %trim(&confLevel.);
+%put &confLevel.;
+
+proc univariate data=prft.pvprofits(where=(cve_scenario ne 0)) pctldef=&pctdef. noprint;
 	var pvAnnualProfit;
+	output out = prft.percentiles pctlpts = &confLevel PCTLPRE=p_;
 run;
 
 proc sql noprint;
-	select estimate format 16.2 into: VaR10
-	from prft.quantiles
-	where Quantile="10%"
+	select p_&confLevel. format 16.2 into: VaR%trim(&confLevel.)
+	from prft.percentiles
 	;
-	select mean(pvAnnualProfit) format 16.2 into: CTE10
+	select mean(pvAnnualProfit) format 16.2 into: CTE&confLevel.
 	from prft.pvprofits
 	where cve_scenario ne 0
-	and pvAnnualProfit < &VaR10.
+	and pvAnnualProfit < &&VaR&confLevel.
 	;
 quit;
 
 proc sql;
-	title 'VaR al 10% de confianza y horizonte hasta que se acaben los pasivos';
-	select estimate format comma16. into: VaR10f
-	from prft.quantiles
-	where Quantile="10%"
+	title "VaR al &confLevel.% de confianza y horizonte hasta que se acaben los pasivos";
+	select p_&confLevel. format comma16. into: VaR&confLevel.f
+	from prft.percentiles
 	;
-	title 'CTE al 10% de confianza y horizonte hasta que se acaben los pasivos';
-	select mean(pvAnnualProfit) format comma16. into: CTE10f
+	title "CTE al &confLevel.% de confianza y horizonte hasta que se acaben los pasivos";
+	select mean(pvAnnualProfit) format comma16. into: CTE&confLevel.f
 	from prft.pvprofits
 	where cve_scenario ne 0
-	and pvAnnualProfit < &VaR10.
+	and pvAnnualProfit < &&VaR&confLevel.
 	;
 quit;
 
@@ -242,8 +260,8 @@ proc sgplot data=prft.pvprofits(where=(cve_scenario ne 0));
  	histogram pvAnnualProfit / fillattrs=(color=blue transparency=0.97);
  	density pvAnnualProfit / lineattrs=(color=red);
  	refline &pvProfitBase. / axis=x lineattrs=(color=green pattern=15) label = ("Esc. Base=&pvProfitBasef.");
- 	refline &VaR10. / axis=x lineattrs=(color=yellow pattern=15) label = ("VaR10=&VaR10f.");
- 	refline &CTE10. / axis=x lineattrs=(color=red pattern=15) label = ("CTE10=&CTE10f."); 	
+ 	refline &&VaR&confLevel. / axis=x lineattrs=(color=yellow pattern=15) label = ("VaR=&&VaR&confLevel.f");
+ 	refline &&CTE&confLevel. / axis=x lineattrs=(color=red pattern=15) label = ("CTE=&&CTE&confLevel.f"); 	
 	xaxis grid;
 	yaxis grid;
 run;

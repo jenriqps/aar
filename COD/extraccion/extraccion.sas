@@ -40,16 +40,16 @@ data ext.catActFin(label="Catalog of Financial Assets");
 run;
 
 proc sql noprint;
-	select put(cod_asset,2.)||"="||"'"||trim(dsc_asset)||"'" into :var separated by " "
+	select put(cod_asset,2.)||"="||"'"||trim(dsc_asset)||"'" into :vara separated by " "
 	from ext.catActFin
 	;
 quit;
 
-%put &var.; 
+%put &vara.; 
 
 proc format lib=ext;
 	value asset
-	&var.
+	&vara.
 	;
 run;
 

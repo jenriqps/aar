@@ -29,7 +29,7 @@ proc iml;
 	radix=1000000;
 	n = nrow(lt);
 	*print n;
-	ltplus=J(n,4);
+	ltplus=J(n,5);
 	*print ltplus;
 	do i=1 to n;
 		ltplus[i,1]=lt[i,1];
@@ -37,6 +37,11 @@ proc iml;
 		ltplus[i,3]=lt[i,2]/1000;
 		if i=1 then ltplus[i,4]=radix;
 		else ltplus[i,4]=ltplus[i-1,4]*(1-ltplus[i-1,3]);
+	end;
+	
+	do i = n to 1 by -1;
+		if i = n then ltplus[i,5] = (1 - ltplus[i,3]);
+		else ltplus[i,5] = (1 - ltplus[i,3]) * ( 1 + ltplus[i+1,5]);
 	end;
 	*print ltplus;
 	* Enviamos los resultados a un data set;
@@ -48,12 +53,13 @@ run;
 
 data ext.tablamortalidadv2;
 	format 
-	col1 comma10. col2 comma10.6 col3 comma10.6 col4 comma10.; 
+	col1 comma10. col2 comma10.6 col3 comma10.6 col4 comma10. col5 comma10.1; 
 	label
 	col1 = "Attained age (years)"
 	col2 = "1000 q_x"
 	col3 = "q_x"
-	col4 = "l_x";
+	col4 = "l_x"
+	col5 = "e_x";
 	set work.ltplus;	
 run;
 
@@ -68,6 +74,13 @@ proc sgplot data=ext.tablamortalidadv2;
 run;
 title;
 
+title 'Life Expectation';
+proc sgplot data=ext.tablamortalidadv2;
+	step x=col1 y=col5 / lineattrs=(color=green);
+	xaxis grid;
+	yaxis grid;
+run;
+title;
 
 
 
