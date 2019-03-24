@@ -10,7 +10,7 @@ options mprint mlogic minoperator fullstimer;
 %let root=/folders/myfolders/aar;
 
 %include "&root./COD/staging/cfinancieros/macrosCFinancieros.sas";
-%include "&root./COD/staging/cfinancieros/configuracion.sas";
+%include "&root./COD/configuracion.sas";
 
 
 proc datasets lib=cfin kill nolist;

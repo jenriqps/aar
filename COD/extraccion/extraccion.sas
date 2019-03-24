@@ -4,12 +4,9 @@
  * Facultad de Ciencias. Universidad Nacional Autónoma de México ;
  **********************************************************************/
 
-
-%global root;
-%let root=/folders/myfolders/aar;
 options  fmtsearch=(ext);
 
-%include "&root./COD/extraccion/configuracion.sas";
+%include "&root./COD/configuracion.sas";
 
 proc datasets lib=ext kill nolist;
 run;
@@ -20,7 +17,7 @@ run;
 
 FILENAME REFFILE "&root./DAT/extraccion/insumos/insumos.xlsx";
 
-/* Input 5 */
+/* Input 1 */
 /*
  * Catálogo de activos financieros
  */
@@ -54,7 +51,7 @@ proc format lib=ext;
 run;
 
 
-/* Input 1 */
+/* Input 2 */
 /*
  * Tabla con los asegurados
  */
@@ -80,7 +77,7 @@ data ext.asegurados(label="Characteristics of the annuities");
 	set work.asegurados;
 run;
 
-/* Input 2 */
+/* Input 3 */
 /*
  * Parámetros 
  */
@@ -101,7 +98,7 @@ data ext.parametros(label="Parameters");
 	set work.parametros;
 run;
 
-/* Input 3 */
+/* Input 4 */
 /*
  * Activos financieros
  */
@@ -142,7 +139,7 @@ data ext.activosFinancieros(label="Characteristics of the Financial Assets");
 	set work.activosFinancieros;
 run;
 
-/* Input 4 */
+/* Input 5 */
 /*
  * Tabla de Mortalidad
  */
@@ -163,7 +160,7 @@ data ext.tablaMortalidad(label="Mortality Table");
 	set work.tablaMortalidad;
 run;
 
-/* Input 5 */
+/* Input 6 */
 /*
  * Escenarios de tasas de interés
  */

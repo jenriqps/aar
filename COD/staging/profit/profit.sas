@@ -4,9 +4,7 @@
  * Facultad de Ciencias. Universidad Nacional Autónoma de México ;
  **********************************************************************/
 options mprint mlogic minoperator fullstimer;
-%global root;
-%let root=/folders/myfolders/aar;
-%include "&root./COD/staging/profit/configuracion.sas";
+%include "&root./COD/configuracion.sas";
 %include "&root./COD/staging/profit/macrosProfit.sas";
 
 proc datasets lib=prft kill nolist;

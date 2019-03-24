@@ -10,7 +10,7 @@ options mprint mlogic minoperator fullstimer;
 %let root=/folders/myfolders/aar;
 
 %include "&root./COD/staging/cactuarial/macrosCActuarial.sas";
-%include "&root./COD/staging/cactuarial/configuracion.sas";
+%include "&root./COD/configuracion.sas";
 
 
 proc datasets lib=cact kill nolist;

@@ -8,10 +8,7 @@
 options mprint mlogic minoperator fullstimer;
 ods graphics / reset width=6.4in height=4.8in imagemap noborder;
 
-%global root;
-%let root=/folders/myfolders/aar;
-
-%include "&root./COD/staging/profit/configuracion.sas";
+%include "&root./COD/configuracion.sas";
 %include "&root./COD/staging/profit/macrosProfit.sas";
 
 options  fmtsearch=(ext);

@@ -4,11 +4,7 @@
  * Facultad de Ciencias. Universidad Nacional Autónoma de México ;
  **********************************************************************/
 
-
-%global root;
-%let root=/folders/myfolders/aar;
-
-%include "&root./COD/staging/aexploratorio/configuracion.sas";
+%include "&root./COD/configuracion.sas";
 ods graphics / reset width=6.4in height=4.8in imagemap noborder;
 options  fmtsearch=(ext);
 
