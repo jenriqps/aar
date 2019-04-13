@@ -50,6 +50,12 @@ proc format lib=ext;
 	;
 run;
 
+* Agregamos un índice;
+proc datasets library=ext nolist;
+	modify catActFin;
+	index create cod_asset / nomiss unique;
+run;
+
 
 /* Input 2 */
 /*
@@ -77,6 +83,12 @@ data ext.asegurados(label="Characteristics of the annuities");
 	set work.asegurados;
 run;
 
+* Agregamos un índice;
+proc datasets library=ext nolist;
+	modify asegurados;
+	index create id_annuity / nomiss unique;
+run;
+
 /* Input 3 */
 /*
  * Parámetros 
@@ -97,6 +109,13 @@ data ext.parametros(label="Parameters");
 		val_parametro = 'Valor del parámetro';
 	set work.parametros;
 run;
+
+* Agregamos un índice;
+proc datasets library=ext nolist;
+	modify parametros;
+	index create id_parameter / nomiss unique;
+run;
+
 
 /* Input 4 */
 /*
@@ -139,6 +158,12 @@ data ext.activosFinancieros(label="Characteristics of the Financial Assets");
 	set work.activosFinancieros;
 run;
 
+* Agregamos un índice;
+proc datasets library=ext nolist;
+	modify activosFinancieros;
+	index create id_asset / nomiss unique;
+run;
+
 /* Input 5 */
 /*
  * Tabla de Mortalidad
@@ -160,6 +185,13 @@ data ext.tablaMortalidad(label="Mortality Table");
 	set work.tablaMortalidad;
 run;
 
+* Agregamos un índice;
+proc datasets library=ext nolist;
+	modify tablaMortalidad;
+	index create val_age / nomiss unique;
+run;
+
+
 /* Input 6 */
 /*
  * Escenarios de tasas de interés
@@ -179,6 +211,12 @@ data ext.escTasasInteres(label="Scenarios of the Interest Rates");
 		num_year = 'Year'
 		pct_rate = 'Interest rate';
 	set work.escTasasInteres;
+run;
+
+* Agregamos un índice;
+proc datasets library=ext nolist;
+	modify escTasasInteres;
+	index create i6 = (cve_scenario num_year) / nomiss unique;
 run;
 
 
