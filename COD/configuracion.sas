@@ -5,7 +5,7 @@
 %global root;
 
 * Modifica la siguiente ruta si es necesario;
-%let root=/folders/myfolders/aar;
+%let root=C:\Users\jenri\Google Drive\Cosas del trabajo\SAS\SASUniversityEdition\myfolders\aar;
 
 /*************************************************************************************************************************************/
 /*****								 Asignacion de librerias									 								******/
