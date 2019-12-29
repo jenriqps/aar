@@ -1,7 +1,7 @@
 /**********************************************************************
- * Notas de Administración Actuarial del Riesgo;
+ * Notas de Administracion Actuarial del Riesgo;
  * Jose Enrique Perez ;
- * Facultad de Ciencias. Universidad Nacional Autónoma de México ;
+ * Facultad de Ciencias. Universidad Nacional Autonoma de Mexico ;
  **********************************************************************/
 
 %include "&root./COD/configuracion.sas";

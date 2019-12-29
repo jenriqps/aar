@@ -1,7 +1,7 @@
 /**********************************************************************
- * Notas de Administración Actuarial del Riesgo;
+ * Notas de Administracion Actuarial del Riesgo;
  * Jose Enrique Perez ;
- * Facultad de Ciencias. Universidad Nacional Autónoma de México ;
+ * Facultad de Ciencias. Universidad Nacional Autonoma de Mexico ;
  **********************************************************************/
 
 options  fmtsearch=(ext);
@@ -19,7 +19,7 @@ FILENAME REFFILE "&root./DAT/extraccion/insumos/insumos.xlsx";
 
 /* Input 1 */
 /*
- * Catálogo de activos financieros
+ * Financial assets catalog
  */
 
 PROC IMPORT DATAFILE=REFFILE
@@ -50,7 +50,7 @@ proc format lib=ext;
 	;
 run;
 
-* Agregamos un índice;
+* We add an index;
 proc datasets library=ext nolist;
 	modify catActFin;
 	index create cod_asset / nomiss unique;
@@ -59,7 +59,7 @@ run;
 
 /* Input 2 */
 /*
- * Tabla con los asegurados
+ * Insured people
  */
 
 PROC IMPORT DATAFILE=REFFILE
@@ -83,7 +83,7 @@ data ext.asegurados(label="Characteristics of the annuities");
 	set work.asegurados;
 run;
 
-* Agregamos un índice;
+* We add an index;
 proc datasets library=ext nolist;
 	modify asegurados;
 	index create id_annuity / nomiss unique;
@@ -91,7 +91,7 @@ run;
 
 /* Input 3 */
 /*
- * Parámetros 
+ * Parameters 
  */
 
 PROC IMPORT DATAFILE=REFFILE
@@ -102,15 +102,15 @@ PROC IMPORT DATAFILE=REFFILE
 RUN;
 
 
-data ext.parametros(label="Parameters");
+data ext.parametros(label='Parameters');
 	label 
-		id_parameter = 'Identificador del parámetro'
-		dsc_parameter = 'Descripción del parámetro'
-		val_parametro = 'Valor del parámetro';
+		id_parameter = 'Parameter ID'
+		dsc_parameter = 'Parameter description'
+		val_parametro = 'Parameter Value';
 	set work.parametros;
 run;
 
-* Agregamos un índice;
+* We add an index;
 proc datasets library=ext nolist;
 	modify parametros;
 	index create id_parameter / nomiss unique;
@@ -119,7 +119,7 @@ run;
 
 /* Input 4 */
 /*
- * Activos financieros
+ * Financial assets
  */
 
 PROC IMPORT DATAFILE=REFFILE
@@ -158,7 +158,7 @@ data ext.activosFinancieros(label="Characteristics of the Financial Assets");
 	set work.activosFinancieros;
 run;
 
-* Agregamos un índice;
+* We add an index;
 proc datasets library=ext nolist;
 	modify activosFinancieros;
 	index create id_asset / nomiss unique;
@@ -166,7 +166,7 @@ run;
 
 /* Input 5 */
 /*
- * Tabla de Mortalidad
+ * Mortality table
  */
 
 PROC IMPORT DATAFILE=REFFILE
@@ -185,7 +185,7 @@ data ext.tablaMortalidad(label="Mortality Table");
 	set work.tablaMortalidad;
 run;
 
-* Agregamos un índice;
+* We add an index;
 proc datasets library=ext nolist;
 	modify tablaMortalidad;
 	index create val_age / nomiss unique;
@@ -194,7 +194,7 @@ run;
 
 /* Input 6 */
 /*
- * Escenarios de tasas de interés
+ * Interest rates scenarios
  */
 
 PROC IMPORT DATAFILE=REFFILE
@@ -213,14 +213,14 @@ data ext.escTasasInteres(label="Scenarios of the Interest Rates");
 	set work.escTasasInteres;
 run;
 
-* Agregamos un índice;
+* We add an index;
 proc datasets library=ext nolist;
 	modify escTasasInteres;
 	index create i6 = (cve_scenario num_year) / nomiss unique;
 run;
 
 
-/* Limpiamos la memoria */
+/* We clean the Work library */
 	
 proc datasets lib=work kill nolist;
 run;

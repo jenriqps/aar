@@ -7,3 +7,4 @@ COD/extraccion/configuracion.html
 COD/extraccion/configuracion.log
 DAT/extraccion/formats.sas7bcat
 DAT/extraccion/insumos/~$insumos.xlsx
+*.sas7bndx
