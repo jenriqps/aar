@@ -13,7 +13,7 @@ proc datasets lib=aexpl kill nolist;
 run;
 
 /*
- * Tabla de mortalidad
+ * Tabla de mortalidad (with IML)
  */
 
 * Agregamos valores a la tabla de mortalidad;
@@ -46,7 +46,6 @@ proc iml;
 	close work.ltplus;	
 run;
 
-
 data ext.tablamortalidadv2;
 	format 
 	col1 comma10. col2 comma10.6 col3 comma10.6 col4 comma10. col5 comma10.1; 
@@ -77,6 +76,61 @@ proc sgplot data=ext.tablamortalidadv2;
 	yaxis grid;
 run;
 title;
+
+/*
+ * Tabla de mortalidad (with DS2)
+ */
+
+data work.tablamortalidadv2;
+	set ext.tablamortalidad;
+	l_x = 1000000;
+	e_x = 1;
+run;
+
+
+proc ds2;
+	data work.tablamortalidadv3(overwrite=yes);
+		dcl double precision l_x having format comma10. label 'Lives (lx)';
+		dcl double precision p_x having format comma10.6 label 'Probability of living (px)';
+
+		dcl package ext.riskEngine risk();
+
+		method run();
+			dcl double precision l_x_lag;
+			set work.tablamortalidadv2(locktable=share);
+			l_x_lag = lag(l_x);
+			l_x = risk.lives(1000000,l_x_lag,val_1000qx/1000);
+			p_x = risk.p_x(val_1000qx/1000);
+			output;
+		end;
+	enddata;
+run;
+quit;
+
+proc sort data=work.tablamortalidadv3;
+	by descending val_age;
+run;
+
+proc ds2;
+	data ext.tablamortalidadv2(overwrite=yes);
+		dcl double precision e_x having format comma10.2 label 'Life expectancy (ex)';
+
+		dcl package ext.riskEngine risk();
+
+		method run();
+			dcl double precision e_x_fwd;
+			set work.tablamortalidadv3(locktable=share);
+			e_x_fwd = lag(e_x);
+			e_x = risk.e_x(p_x,e_x_fwd);
+			output;
+		end;
+	enddata;
+run;
+quit;
+
+
+
+
 
 
 
