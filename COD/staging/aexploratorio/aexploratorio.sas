@@ -8,21 +8,22 @@
 ods graphics / reset width=6.4in height=4.8in imagemap noborder;
 options  fmtsearch=(ext);
 
+%let radix = 1000000;
 
 proc datasets lib=aexpl kill nolist;
 run;
 
 /*
- * Tabla de mortalidad (with IML)
+ * Mortality table (with IML)
  */
 
-* Agregamos valores a la tabla de mortalidad;
+* We add the values to the mortality table;
 proc iml;
 	edit ext.TABLAMORTALIDAD;
 	read all var _NUM_ into lt[colname=numVars];
 	close ext.TABLAMORTALIDAD; 	
 
-	radix=1000000;
+	radix = &radix.;
 	n = nrow(lt);
 	*print n;
 	ltplus=J(n,5);
@@ -39,8 +40,8 @@ proc iml;
 		if i = n then ltplus[i,5] = (1 - ltplus[i,3]);
 		else ltplus[i,5] = (1 - ltplus[i,3]) * ( 1 + ltplus[i+1,5]);
 	end;
-	*print ltplus;
-	* Enviamos los resultados a un data set;
+	* print ltplus;
+	* We send the results to a data set;
 	create work.ltplus from ltplus;
 	append from ltplus;
 	close work.ltplus;	
@@ -78,29 +79,31 @@ run;
 title;
 
 /*
- * Tabla de mortalidad (with DS2)
+ * Mortality table (same results as the previous ones but with DS2 procedure)
  */
-
-data work.tablamortalidadv2;
-	set ext.tablamortalidad;
-	l_x = 1000000;
-	e_x = 1;
-run;
-
 
 proc ds2;
 	data work.tablamortalidadv3(overwrite=yes);
-		dcl double precision l_x having format comma10. label 'Lives (lx)';
-		dcl double precision p_x having format comma10.6 label 'Probability of living (px)';
-
+		* We declare the variables;
+		dcl double precision l_x having format comma10. label 'Lives (l_x)';
+		dcl double precision p_x having format comma10.6 label 'Probability of living (p_x)';
+		dcl double precision q_x having format comma10.6 label 'Probability of death (q_x)';
+		dcl double precision n_p_x0 having format comma10.6 label 'Cumulative Probability of living (at age x0)';
+		retain n_p_x0;
 		dcl package ext.riskEngine risk();
 
-		method run();
-			dcl double precision l_x_lag;
-			set work.tablamortalidadv2(locktable=share);
-			l_x_lag = lag(l_x);
-			l_x = risk.lives(1000000,l_x_lag,val_1000qx/1000);
+		* We initialize the values;	
+		method init();
+			n_p_x0 = 1;
+		end;
+		
+		* We calculate the values;
+		method run();	
+			set ext.tablamortalidad(locktable=share);
+			l_x = &radix. * n_p_x0;
 			p_x = risk.p_x(val_1000qx/1000);
+			q_x = 1 - p_x;
+			n_p_x0 = n_p_x0 * p_x;
 			output;
 		end;
 	enddata;
@@ -113,29 +116,48 @@ run;
 
 proc ds2;
 	data ext.tablamortalidadv2(overwrite=yes);
-		dcl double precision e_x having format comma10.2 label 'Life expectancy (ex)';
-
+		* We declare the variables;
+		dcl double precision e_x having format comma10.2 label 'Life expectation (e_x)';
+		dcl double precision e_x_fwd;
+		retain e_x_fwd;
 		dcl package ext.riskEngine risk();
+		* We initialize the values;	
+		method init();
+			e_x_fwd = 0;
+		end;
 
+		* We calculate the values;	
 		method run();
-			dcl double precision e_x_fwd;
 			set work.tablamortalidadv3(locktable=share);
-			e_x_fwd = lag(e_x);
-			e_x = risk.e_x(p_x,e_x_fwd);
+			
+			e_x_fwd = p_x * (1 + e_x_fwd);
+			e_x = e_x_fwd;
 			output;
 		end;
 	enddata;
 run;
 quit;
 
+title 'Mortality table';
+proc sgplot data=ext.tablamortalidadv2;
+	step x=val_age y=q_x / lineattrs=(color=orange);
+	step x=val_age y=l_x / y2axis lineattrs=(color=blue);
+	xaxis grid;
+	yaxis grid;
+run;
+title;
 
-
-
-
+title 'Life Expectation';
+proc sgplot data=ext.tablamortalidadv2;
+	step x=val_age y=e_x / lineattrs=(color=green);
+	xaxis grid;
+	yaxis grid;
+run;
+title;
 
 
 /*
- * Escenarios de la curva de interés
+ * Scenarios of the annual forward rate
  */
 
 title 'Scenarios of the annual forward rate';
@@ -151,7 +173,7 @@ run;
 title;
 
 /*
- * Identificamos los diferentes nodos
+ * We identify the terms
  */
 
 ods graphics / reset width=8in height=8in imagemap noborder;
@@ -201,7 +223,7 @@ ods graphics / reset width=6.4in height=4.8in imagemap noborder;
 
 *%histogramas;
 
-/* Asegurados */
+/* Insured people */
 title "Characteristics of the insured people";
 proc print data=ext.asegurados label;
 run;
