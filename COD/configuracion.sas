@@ -5,7 +5,8 @@
 %global root;
 
 * Modifica la siguiente ruta si es necesario;
-%let root=C:/Users/jenri/Google Drive/Cosas del trabajo/SAS/SASUniversityEdition/myfolders/aar;
+*%let root=C:/Users/jenri/Google Drive/Cosas del trabajo/SAS/SASUniversityEdition/myfolders/aar;
+%let root=/folders/myfolders/aar;
 
 /*************************************************************************************************************************************/
 /*****								 Asignacion de librerias									 								******/
@@ -17,20 +18,9 @@ libname cact "&root./DAT/staging/cactuarial";
 libname cfin "&root./DAT/staging/cfinancieros";	
 libname prft "&root./DAT/staging/profit";	
 
-* Package of methods;
 
-proc ds2;
-	package ext.riskEngine / overwrite=yes;
+FILENAME REFFILE "&root./DAT/extraccion/insumos/insumos.xlsx";
 
-		method p_x(double precision q_x) returns double precision;
-			dcl double precision p_x;
-			p_x = 1 - q_x;
-			return p_x;
-		end; 
-
-	endpackage;
-run;
-quit;
 
 
 

@@ -6,43 +6,11 @@
 
 options mprint mlogic minoperator fullstimer;
 
-%global root;
-%let root=/folders/myfolders/aar;
-
 %include "&root./COD/staging/cactuarial/macrosCActuarial.sas";
 %include "&root./COD/configuracion.sas";
 
 
-proc datasets lib=cact kill nolist;
-run;
-
-* Obtenemos la tasa de interés para el cálculo de las reservas;
-proc sql noprint;
-	select val_parametro into: i_reserve
-	from ext.parametros
-	where id_parameter = 14
-	;
-quit;
-
-
-%reserve_v2(id_annuity=1,val_i=&i_reserve.)
-%reserve_v2(id_annuity=2,val_i=&i_reserve.)
-%reserve_v2(id_annuity=3,val_i=&i_reserve.)
-;
-
-
-/* Unimos todas las reservas en un tabla, máxima granularidad */ 
-
-data cact.reserve;
-	set work.res_id_:;
-run;
-
-proc datasets lib=work kill nolist;
-run;
-
-
-
-/* Agregamos las reservas por anio */
+/* We add the reservers per year */
 
 proc sql;
 	create table cact.reserve_year as

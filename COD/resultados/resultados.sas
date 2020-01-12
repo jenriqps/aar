@@ -263,4 +263,8 @@ proc sgplot data=prft.pvprofits(where=(cve_scenario ne 0));
 	yaxis grid;
 run;
 
+* We export the results to an Excel file;
+proc export data=prft.pvprofits dbms=xlsx outfile="&root./DAT/staging/profit/pvprofits.xlsx" replace;
+run;
+
 
