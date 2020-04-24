@@ -238,16 +238,20 @@ proc sql noprint;
 quit;
 
 proc sql;
+	ods layout gridded columns=2;
+	ods region;
 	title "VaR al &confLevel.% de confianza y horizonte hasta que se acaben los pasivos";
 	select p_&confLevel. format comma16. into: VaR&confLevel.f
 	from prft.percentiles
 	;
+	ods region;
 	title "CTE al &confLevel.% de confianza y horizonte hasta que se acaben los pasivos";
 	select mean(pvAnnualProfit) format comma16. into: CTE&confLevel.f
 	from prft.pvprofits
 	where cve_scenario ne 0
 	and pvAnnualProfit < &&VaR&confLevel.
 	;
+	ods layout end;
 quit;
 
 ods graphics / reset width=6.4in height=6in imagemap noborder;

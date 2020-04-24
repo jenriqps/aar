@@ -8,3 +8,6 @@ COD/extraccion/configuracion.log
 DAT/extraccion/formats.sas7bcat
 DAT/extraccion/insumos/~$insumos.xlsx
 *.sas7bndx
+COD/flujoAAR_v3.cpf
+DAT/staging/profit/pvprofits.xlsx.bak
+DAT/staging/profit/pvprofits.xlsx.bak
