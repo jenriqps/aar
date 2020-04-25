@@ -86,6 +86,8 @@ proc ds2;
 run;
 quit;
 
+ods layout gridded columns=2;
+ods region;
 title 'Mortality table';
 proc sgplot data=ext.tablamortalidadv2_2;
 	step x=val_age y=q_x / lineattrs=(color=orange);
@@ -95,6 +97,7 @@ proc sgplot data=ext.tablamortalidadv2_2;
 run;
 title;
 
+ods region;
 title 'Life Expectation';
 proc sgplot data=ext.tablamortalidadv2_2;
 	step x=val_age y=e_x / lineattrs=(color=green);
@@ -102,5 +105,6 @@ proc sgplot data=ext.tablamortalidadv2_2;
 	yaxis grid;
 run;
 title;
+ods layout end;
 
 

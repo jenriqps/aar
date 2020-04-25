@@ -15,6 +15,8 @@ options  fmtsearch=(ext);
 
 
 ods graphics / reset imagemap noborder;
+ods layout gridded columns=2;
+ods region;
 title "Liabilities - Reserves";
 title2 "by Year";
 proc sgplot data=cact.reserve_year;
@@ -25,6 +27,7 @@ run;
 title;
 
 ods graphics / reset imagemap noborder;
+ods region;
 title "Liabilities - Projected Payments";
 title2 "by Year";
 proc sgplot data=cact.projcf_year;
@@ -33,6 +36,7 @@ proc sgplot data=cact.projcf_year;
 	yaxis grid;
 run;
 title;
+ods layout end;
 
 * Asset #1;
 
@@ -61,6 +65,8 @@ title2 "Is the asset value equal to zero? (0: No, 1: Yes, .: It does not exist))
  );
 
 ods graphics / reset imagemap noborder;
+ods layout gridded columns=2;
+ods region;
 title 'Assets - Heatmap of the asset value scenarios of Asset #1 (Coupon bond)';
 proc sgplot data=cfin.asset(where=(id=1 and num_year>0));
 	heatmap x=num_year y=val_assetValue / colorstat=freq nxbins=14 /*nybins=10*/ showybins showxbins;
@@ -70,6 +76,7 @@ run;
 title;
 
 ods graphics / reset imagemap noborder;
+ods region;
 title 'Assets - Heatmap of the cash flow scenarios of Asset #1 (Coupon bond)';
 proc sgplot data=cfin.asset(where=(id=1 and num_year>0));
 	heatmap x=num_year y=val_cashFlow / colorstat=freq nxbins=14 /*nybins=10*/ showybins showxbins;
@@ -77,6 +84,8 @@ proc sgplot data=cfin.asset(where=(id=1 and num_year>0));
 	yaxis grid;
 run;
 title;
+ods layout end;
+
 
 * Asset #2;
 ods graphics / reset imagemap noborder;
@@ -87,6 +96,8 @@ run;
 title;
 
 ods graphics / reset imagemap noborder;
+ods layout gridded columns=2;
+ods region;
 title 'Assets - Heatmap of the asset value scenarios of Asset #2 (Zero-coupon bond)';
 proc sgplot data=cfin.asset(where=(id=2 and num_year>0));
 	heatmap x=num_year y=val_assetValue / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
@@ -96,15 +107,20 @@ run;
 title;
 
 ods graphics / reset imagemap noborder;
+ods region;
 title 'Assets - Heatmap of the cash flow scenarios of Asset #2 (Zero-coupon bond)';
 proc sgplot data=cfin.asset(where=(id=2 and num_year>0));
 	heatmap x=num_year y=val_cashFlow / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
 run;
 title;
+ods layout end;
+
 
 * Asset #3;
 
 ods graphics /reset imagemap noborder;
+ods layout gridded columns=2;
+ods region;
 title 'Assets - Heatmap of the asset value scenarios of Asset #3 (Mortgage bond)';
 proc sgplot data=cfin.asset(where=(id=3 and num_year>0));
 	heatmap x=num_year y=val_assetValue / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
@@ -114,6 +130,7 @@ run;
 title;
 
 ods graphics / reset imagemap noborder;
+ods region;
 title 'Assets - Heatmap of the cash flow scenarios of Asset #3 (Mortgage bond)';
 proc sgplot data=cfin.asset(where=(id=3 and num_year>0));
 	heatmap x=num_year y=val_cashFlow / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
@@ -121,9 +138,13 @@ proc sgplot data=cfin.asset(where=(id=3 and num_year>0));
 	yaxis grid;
 run;
 title;
+ods layout end;
+
 
 * Todos los activos;
 ods graphics / reset imagemap noborder;
+ods layout gridded columns=2;
+ods region;
 title 'Total Assets';
 proc sgplot data=cfin.assets_year(where=(num_year>0));
 	heatmap x=num_year y=val_assetTotal / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
@@ -133,6 +154,7 @@ run;
 title;
 
 ods graphics / reset imagemap noborder;
+ods region;
 title 'Total Asset Cash Flows';
 proc sgplot data=cfin.assetscf_year(where=(num_year>0));
 	heatmap x=num_year y=val_assetCFTotal / colorstat=freq /*nxbins=14 nybins=10*/ showybins showxbins;
@@ -140,6 +162,7 @@ proc sgplot data=cfin.assetscf_year(where=(num_year>0));
 	yaxis grid;
 run;
 title;
+ods layout end;
 
 
 
