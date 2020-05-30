@@ -214,11 +214,11 @@ title;
 
 
 proc sql noprint;
-	select pvAnnualProfit format 16.2 into: pvProfitBase
+	select pvAnnualProfit format 16.2 into: pvProfitBase trimmed
 	from prft.pvprofits
 	where cve_scenario = 0
 	;
-	select pvAnnualProfit format comma16. into: pvProfitBasef
+	select pvAnnualProfit format comma16. into: pvProfitBasef trimmed
 	from prft.pvprofits
 	where cve_scenario = 0
 	;
@@ -229,12 +229,12 @@ quit;
 
 proc sql noprint;
 	* Nivel de confianza;
-	select val_parametro into: confLevel
+	select val_parametro into: confLevel trimmed
 	from ext.parametros
 	where id_parameter = 15
 	;
 	* Definición del percentil;
-	select val_parametro into: pctdef
+	select val_parametro into: pctdef trimmed
 	from ext.parametros
 	where id_parameter = 16
 	;
@@ -250,10 +250,10 @@ proc univariate data=prft.pvprofits(where=(cve_scenario ne 0)) pctldef=&pctdef. 
 run;
 
 proc sql noprint;
-	select p_&confLevel. format 16.2 into: VaR%trim(&confLevel.)
+	select p_&confLevel. format 16.2 into: VaR%trim(&confLevel.) trimmed
 	from prft.percentiles
 	;
-	select mean(pvAnnualProfit) format 16.2 into: CTE&confLevel.
+	select mean(pvAnnualProfit) format 16.2 into: CTE&confLevel. trimmed
 	from prft.pvprofits
 	where cve_scenario ne 0
 	and pvAnnualProfit < &&VaR&confLevel.
@@ -264,12 +264,12 @@ proc sql;
 	ods layout gridded columns=2;
 	ods region;
 	title "VaR al &confLevel.% de confianza y horizonte hasta que se acaben los pasivos";
-	select p_&confLevel. format comma16. into: VaR&confLevel.f
+	select p_&confLevel. format comma16. into: VaR&confLevel.f trimmed
 	from prft.percentiles
 	;
 	ods region;
 	title "CTE al &confLevel.% de confianza y horizonte hasta que se acaben los pasivos";
-	select mean(pvAnnualProfit) format comma16. into: CTE&confLevel.f
+	select mean(pvAnnualProfit) format comma16. into: CTE&confLevel.f trimmed
 	from prft.pvprofits
 	where cve_scenario ne 0
 	and pvAnnualProfit < &&VaR&confLevel.
