@@ -418,17 +418,20 @@ Cálculo de precios de activos con SAS/IML
 				append from asset;
 				close work.assets5;	
 				
-			run;
+				
+			quit;
 
-			data work.asset_id_&id_asset._&sim.(keep=cve_scenario id num_year val_assetValue val_cashFlow);
-				format num_year 10. val_assetValue val_cashFlow comma16.2;
-				set work.assets5;
-				num_year = col1;
-				val_assetValue = col5;
-				val_cashFlow = col6;
-				cve_scenario = &sim.;
-				id = &id_asset.;
-			run;
+					data work.asset_id_&id_asset._&sim.(keep=cve_scenario id num_year val_assetValue val_cashFlow);
+						format num_year 10. val_assetValue val_cashFlow comma16.2;
+						set work.assets5;
+						num_year = col1;
+						val_assetValue = col5;
+						val_cashFlow = col6;
+						cve_scenario = &sim.;
+						id = &id_asset.;
+					run;				
+
+
 		%end;
 
 	/* Bono cupón cero */
@@ -455,19 +458,22 @@ Cálculo de precios de activos con SAS/IML
 				* Enviamos los resultados a un data set;
 				create work.assets2 from asset;
 				append from asset;
-				close work.assets2;					
-			run;
+				close work.assets2;		
+				
+				
+			quit;
+
+					data work.asset_id_&id_asset._&sim.(keep=cve_scenario id num_year val_assetValue val_cashFlow);
+						format num_year 10. val_assetValue val_cashFlow comma16.2;			
+						set work.assets2;
+						cve_scenario = &sim.;
+						id = &id_asset.;
+						num_year = col1;
+						val_assetValue = col2;
+						val_cashFlow = col3;
+					run;				
 			
 			
-			data work.asset_id_&id_asset._&sim.(keep=cve_scenario id num_year val_assetValue val_cashFlow);
-				format num_year 10. val_assetValue val_cashFlow comma16.2;			
-				set work.assets2;
-				cve_scenario = &sim.;
-				id = &id_asset.;
-				num_year = col1;
-				val_assetValue = col2;
-				val_cashFlow = col3;
-			run;
 		%end;
 	
 	/* Bono respaldado con hipotecas */
@@ -540,18 +546,20 @@ Cálculo de precios de activos con SAS/IML
 				* Enviamos los resultados a un data set;
 				create work.assets4 from asset;
 				append from asset;
-				close work.assets4;					
-			run;
+				close work.assets4;		
 				
-				data work.asset_id_&id_asset._&sim.(keep= cve_scenario id num_year val_assetValue val_cashFlow);
-					format num_year 10. val_assetValue val_cashFlow comma16.2;
-					set work.assets4;
-					cve_scenario = &sim.;
-					id = &id_asset.;
-					num_year = col1;					
-					val_assetValue = col11;
-					val_cashFlow = col5;
-				run;
+				
+			quit;
+				
+					data work.asset_id_&id_asset._&sim.(keep= cve_scenario id num_year val_assetValue val_cashFlow);
+						format num_year 10. val_assetValue val_cashFlow comma16.2;
+						set work.assets4;
+						cve_scenario = &sim.;
+						id = &id_asset.;
+						num_year = col1;					
+						val_assetValue = col11;
+						val_cashFlow = col5;
+					run;
 				
 
 			

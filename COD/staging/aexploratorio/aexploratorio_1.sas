@@ -43,39 +43,48 @@ proc iml;
 	create work.ltplus from ltplus;
 	append from ltplus;
 	close work.ltplus;	
-run;
+	
+	
+	* Doing everything inside IML procedure;
+	submit;
+	
+		data ext.tablamortalidadv2;
+			format 
+			col1 comma10. col2 comma10.6 col3 comma10.6 col4 comma10. col5 comma10.1; 
+			label
+			col1 = "Attained age (years)"
+			col2 = "1000 q_x"
+			col3 = "q_x"
+			col4 = "l_x"
+			col5 = "e_x";
+			set work.ltplus;	
+		run;
+		
+		
+		ods layout gridded columns=2;
+		ods region;
+		title 'Mortality table';
+		proc sgplot data=ext.tablamortalidadv2;
+			step x=col1 y=col3 / lineattrs=(color=orange);
+			step x=col1 y=col4 / y2axis lineattrs=(color=blue);
+			xaxis grid;
+			yaxis grid;
+		run;
+		title;
+		ods region;
+		title 'Life Expectation';
+		proc sgplot data=ext.tablamortalidadv2;
+			step x=col1 y=col5 / lineattrs=(color=green);
+			xaxis grid;
+			yaxis grid;
+		run;
+		title;
+		ods layout end;	
+	
+	endsubmit;
+	
+	
+quit;
 
-data ext.tablamortalidadv2;
-	format 
-	col1 comma10. col2 comma10.6 col3 comma10.6 col4 comma10. col5 comma10.1; 
-	label
-	col1 = "Attained age (years)"
-	col2 = "1000 q_x"
-	col3 = "q_x"
-	col4 = "l_x"
-	col5 = "e_x";
-	set work.ltplus;	
-run;
-
-
-ods layout gridded columns=2;
-ods region;
-title 'Mortality table';
-proc sgplot data=ext.tablamortalidadv2;
-	step x=col1 y=col3 / lineattrs=(color=orange);
-	step x=col1 y=col4 / y2axis lineattrs=(color=blue);
-	xaxis grid;
-	yaxis grid;
-run;
-title;
-ods region;
-title 'Life Expectation';
-proc sgplot data=ext.tablamortalidadv2;
-	step x=col1 y=col5 / lineattrs=(color=green);
-	xaxis grid;
-	yaxis grid;
-run;
-title;
-ods layout end;
 
 

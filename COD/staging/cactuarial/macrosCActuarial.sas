@@ -273,7 +273,7 @@
 	append from res;
 	close work.res;		
 		
-	run;
+	quit;
 	
 
 	
