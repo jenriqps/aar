@@ -69,19 +69,18 @@ run;
 
 ods graphics / reset width=6.4in height=6in imagemap noborder;
 
-
+title "Distribución conjunta de las pérdidas y ganancias de los activos y pasivos";
+title2 "Gráfico de dispersión";
 proc sgplot data=work.totalLoss;
  	scatter x = LA y = LP;
  	xaxis grid;
 	yaxis grid;
 run;
 
-
-
-title 'Histograma';
+title "Distribución conjunta de las pérdidas y ganancias de los activos y pasivos";
+title2 "Mapa de calor";
 proc sgplot data=work.totalLoss;
- 	histogram totalLoss / fillattrs=(color=blue transparency=0.97);
- 	density totalLoss / lineattrs=(color=red);
+ 	heatmap x = LA y = LP;
  	xaxis grid;
 	yaxis grid;
 run;
@@ -90,6 +89,24 @@ proc univariate data=work.totalLoss pctldef=1 noprint;
 	var totalLoss;
 	output out=work.var PCTLPRE=p pctlpts=0.005;
 run;
+
+title "Requerimiento de Capital por Riesgos Técnicos y Financieros";
+proc sql;
+	select * into: var
+ 	from work.var
+ 	;
+run;
+
+title 'Pérdida total';
+title2 "Histograma";
+proc sgplot data=work.totalLoss;
+ 	histogram totalLoss / fillattrs=(color=green transparency=0.97);
+ 	*density totalLoss / lineattrs=(color=red);
+  	refline &var. / axis=x lineattrs=(color=red pattern=15) label = ("RCRTyF");
+ 	xaxis grid;
+	yaxis grid;
+run;
+
 
 
 
