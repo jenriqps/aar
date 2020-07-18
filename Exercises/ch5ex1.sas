@@ -18,7 +18,7 @@ proc iml;
 	* Fixing the seed of random numbers for replicability;
 	call randseed(2020);
 	* Number of simulations;
-	N = 10000;
+	N = 100000;
 	muA = 0;
 	muP = 0;
 	* Vector of standard deviations for assets and liabilities, respectively;
@@ -67,15 +67,17 @@ proc datasets lib=work nolist nodetails;
 	label LA="Asset loss (LA)" LP="Liability loss (LP)" totalLoss = "Total loss (LA + LP)";
 run;
 
-ods graphics / reset width=6.4in height=6in imagemap noborder;
+ods graphics / reset imagemap noborder;
 
 title "Distribución conjunta de las pérdidas y ganancias de los activos y pasivos";
 title2 "Gráfico de dispersión";
+/*
 proc sgplot data=work.totalLoss;
  	scatter x = LA y = LP;
  	xaxis grid;
 	yaxis grid;
 run;
+*/
 
 title "Distribución conjunta de las pérdidas y ganancias de los activos y pasivos";
 title2 "Mapa de calor";
