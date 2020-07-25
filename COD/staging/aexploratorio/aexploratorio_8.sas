@@ -11,8 +11,8 @@ options  fmtsearch=(ext);
 
 /* We clean the Work library */
 	
-proc datasets lib=work kill nolist;
-run;
+proc datasets lib=work kill nolist nodetails;
+quit;
 
 
 

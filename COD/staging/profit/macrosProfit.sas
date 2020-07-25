@@ -176,9 +176,9 @@
 	
 	/* Limpiamos la memoria */
 	
-	proc datasets lib=work nolist;
+	proc datasets lib=work nolist nodetails;
 		delete profits: profitsaux;
-	run;
+	quit;
 	
 	
 
@@ -365,9 +365,9 @@
 	
 	/* Limpiamos la memoria */
 	
-	proc datasets lib=work nolist;
+	proc datasets lib=work nolist nodetails;
 		delete profits: profitsaux;
-	run;
+	quit;
 	
 	
 

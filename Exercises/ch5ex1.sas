@@ -65,7 +65,7 @@ proc datasets lib=work nolist nodetails;
 	rename col1=LA col2=LP col3=totalLoss;
 	format LA LP totalLoss comma10.2;
 	label LA="Asset loss (LA)" LP="Liability loss (LP)" totalLoss = "Total loss (LA + LP)";
-run;
+quit;
 
 ods graphics / reset imagemap noborder;
 

@@ -172,9 +172,9 @@
 		set work.reserves8;
 	run;
 	
-	proc datasets lib=work nolist;
+	proc datasets lib=work nolist nodetails;
 		delete reserves: resaux:;
-	run;
+	quit;
 
 %mend;
 
@@ -299,9 +299,9 @@
 	run;
 	
 	
-	proc datasets lib=work nolist;
+	proc datasets lib=work nolist nodetails;
 		delete reserves: resaux:;
-	run;
+	quit;
 	
 	
 

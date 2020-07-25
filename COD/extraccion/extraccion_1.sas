@@ -42,9 +42,9 @@ proc format lib=ext;
 run;
 
 * We add an index;
-proc datasets library=ext nolist;
+proc datasets library=ext nolist nodetails;
 	modify catActFin;
 	index create cod_asset / nomiss unique;
-run;
+quit;
 
 

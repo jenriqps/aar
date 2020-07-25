@@ -14,8 +14,8 @@ options mprint mlogic minoperator fullstimer;
 
 /* 0 We clean the previous data sets */
 
-proc datasets lib=cfin kill nolist;
-run;
+proc datasets lib=cfin kill nolist nodetails;
+quit;
 
 proc sql noprint;
 	select val_parametro into: i_assets
@@ -87,8 +87,8 @@ run;
 
 
 
-proc datasets lib=work kill nolist;
-run;
+proc datasets lib=work kill nolist nodetails;
+quit;
 
 
 

@@ -71,8 +71,8 @@ data cfin.asset_base;
 	set work.asset_id_:;
 run;
 
-proc datasets lib=work kill nolist;
-run;
+proc datasets lib=work kill nolist nodetails;
+quit;
 
 
 

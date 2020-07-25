@@ -11,8 +11,8 @@ options mprint mlogic minoperator fullstimer;
 %include "&root./COD/configuracion.sas";
 
 
-proc datasets lib=cact kill nolist;
-run;
+proc datasets lib=cact kill nolist nodetails;
+quit;
 
 * Obtenemos la tasa de interés para el cálculo de las reservas;
 proc sql noprint;

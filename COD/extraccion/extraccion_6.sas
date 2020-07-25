@@ -30,10 +30,10 @@ data ext.escTasasInteres(label="Scenarios of the Interest Rates");
 run;
 
 * We add an index;
-proc datasets library=ext nolist;
+proc datasets library=ext nolist nodetails;
 	modify escTasasInteres;
 	index create i6 = (cve_scenario num_year) / nomiss unique;
-run;
+quit;
 
 
 /* We clean the Work library */

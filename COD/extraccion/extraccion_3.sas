@@ -32,9 +32,9 @@ data ext.parametros(label='Parameters');
 run;
 
 * We add an index;
-proc datasets library=ext nolist;
+proc datasets library=ext nolist nodetails;
 	modify parametros;
 	index create id_parameter / nomiss unique;
-run;
+quit;
 
 

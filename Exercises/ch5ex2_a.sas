@@ -6,7 +6,6 @@
 
 /*
 Anexo 6.3.3 CUSF
-https://sasnrd.com/sas-simulate-rsln-model/
 */
 
 ods graphics / reset imagemap noborder;
@@ -15,7 +14,7 @@ ods graphics / reset imagemap noborder;
 proc iml;
 	* Fixing the seed of random numbers for replicability;
 	call randseed(2020);
-	* Number of simulations;
+	* Number of steps;
 	N = 365;
 	dt = 1/N;
 	t = do(1/N,1,1/N);
@@ -23,7 +22,7 @@ proc iml;
 	sigma = 0.2;
 	Z0 = 23;
 	a = {-1 1};
-	* Independent normal standard numbers for Assets (A);
+	* Independent normal numbers;
 	dW = j(N,2);
 	call randgen(dW,"Normal",0,(dt)**0.5);
 	

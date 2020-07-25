@@ -16,8 +16,8 @@ data cact.reserve;
 	set work.res_id_:;
 run;
 
-proc datasets lib=work kill nolist;
-run;
+proc datasets lib=work kill nolist nodetails;
+quit;
 
 
 

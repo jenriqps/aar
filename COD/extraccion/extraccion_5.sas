@@ -31,9 +31,9 @@ data ext.tablaMortalidad(label="Mortality Table");
 run;
 
 * We add an index;
-proc datasets library=ext nolist;
+proc datasets library=ext nolist nodetails;
 	modify tablaMortalidad;
 	index create val_age / nomiss unique;
-run;
+quit;
 
 

@@ -36,8 +36,8 @@ data ext.asegurados(label="Characteristics of the annuities");
 run;
 
 * We add an index;
-proc datasets library=ext nolist;
+proc datasets library=ext nolist nodetails;
 	modify asegurados;
 	index create id_annuity / nomiss unique;
-run;
+quit;
 

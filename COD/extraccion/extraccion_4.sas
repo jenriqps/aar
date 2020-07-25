@@ -50,7 +50,7 @@ data ext.activosFinancieros(label="Characteristics of the Financial Assets");
 run;
 
 * We add an index;
-proc datasets library=ext nolist;
+proc datasets library=ext nolist nodetails;
 	modify activosFinancieros;
 	index create id_asset / nomiss unique;
-run;
+quit;

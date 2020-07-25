@@ -324,9 +324,9 @@
 		
 	/* Limpiamos la memoria */
 	
-	proc datasets lib=work nolist;
+	proc datasets lib=work nolist nodetails;
 		delete assets: aux:;
-	run;
+	quit;
 	
 	
 
@@ -569,9 +569,9 @@ Cálculo de precios de activos con SAS/IML
 		
 	/* Limpiamos la memoria */
 	
-	proc datasets lib=work nolist;
+	proc datasets lib=work nolist nodetails;
 		delete assets: aux:;
-	run;
+	quit;
 	
 	
 

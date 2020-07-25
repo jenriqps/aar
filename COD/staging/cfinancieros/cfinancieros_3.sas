@@ -20,8 +20,8 @@ run;
 
 
 
-proc datasets lib=work kill nolist;
-run;
+proc datasets lib=work kill nolist nodetails;
+quit;
 
 
 

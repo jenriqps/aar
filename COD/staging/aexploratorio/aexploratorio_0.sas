@@ -10,5 +10,5 @@ options  fmtsearch=(ext);
 
 %let radix = 1000000;
 
-proc datasets lib=aexpl kill nolist;
-run;
+proc datasets lib=aexpl kill nolist nodetails;
+quit;
