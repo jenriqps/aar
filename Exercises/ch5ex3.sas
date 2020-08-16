@@ -1,31 +1,51 @@
-* http://www2.ssn.unam.mx:8080/mapas-de-intensidades/;
-
 /**********************************************************************
  * Notas de Administración Actuarial del Riesgo;
  * Jose Enrique Perez ;
  * Facultad de Ciencias. Universidad Nacional Autónoma de México ;
  **********************************************************************/
 
+ods graphics / reset imagemap noborder;
 
-data work.bd_viv(drop=i);
-	label 
-	id = "ID of the insurance"
-	mnt_outsPrincipal = "Outstanding Principal"
-	pct_annualYield = "Annual interest rate charged on the loan"
-	num_remainingYears = "Remaining years of the loan"
-	cd_currency = "Currency of the loan"
-	cd_institution = "Institution that gives the loan"
-	;
-	format mnt_outsPrincipal nlnum16.2 pct_annualYield percentn10.2;	
-	do i=1 to 1000;
-		id = "CV"||put(i,z5.);
-		pct_annualYield = rand("Uniform")*0.1+0.05; 
-		num_remainingYears = rand("binomial",0.5,30); 
-		mnt_outsPrincipal = rand("exponential")*1000000; 
-		cd_currency = "MXN";
-		cd_institution = "BANAMEX";
-		num_maturityYears = 30 -  num_remainingYears;
-		num_duemonths = rand("binomial",0.05,12); 
-		output;		
-	end;
+title "Annual interest rate charged on the loan";
+proc sgplot data=work.bd_viv;
+	histogram pct_annualYield / group=cd_lendingInstitution fillattrs=(color=brown transparency=0.7);
+run;
+
+title "Remaining years of the loan";
+proc sgplot data=work.bd_viv;
+	histogram num_remainingYears / group=cd_lendingInstitution fillattrs=(color=brown transparency=0.7);
+run;
+title "Outstanding Principal";
+proc sgplot data=work.bd_viv;
+	histogram mnt_outsPrincipal / group=cd_lendingInstitution fillattrs=(color=brown transparency=0.7);
+run;
+
+title "Number of years to maturity";
+proc sgplot data=work.bd_viv;
+	histogram num_maturityYears / group=cd_lendingInstitution fillattrs=(color=brown transparency=0.7);
+run;
+
+title "Value of the house";
+proc sgplot data=work.bd_viv;
+	histogram mnt_valueHouse / group=cd_lendingInstitution fillattrs=(color=brown transparency=0.7);
+run;
+
+title "Loan to Value Ratio";
+proc sgplot data=work.bd_viv;
+	histogram LtV / group=cd_lendingInstitution fillattrs=(color=brown transparency=0.7);
+run;
+
+title "Months in default";
+proc sgplot data=work.bd_viv;
+	vbar num_defaultmonths / group=cd_lendingInstitution fillattrs=(color=green transparency=0.97) stat=percent;
+run;
+
+title "Loan currency";
+proc sgplot data=work.bd_viv;
+	vbar cd_currency / fillattrs=(color=green transparency=0.97) stat=percent;
+run;
+
+title "Lending Institution";
+proc sgplot data=work.bd_viv;
+	vbar cd_lendingInstitution / fillattrs=(color=green transparency=0.97) stat=percent;
 run;
