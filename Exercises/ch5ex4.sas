@@ -7,8 +7,11 @@
 
 * Declaring a library that reads the XML file;
 
+options mprint mlogic minoperator fullstimer;
+
+
 filename tb temp;
-libname tb xmlv2 '/folders/myfolders/aar/Exercises/DailyTreasuryYieldCurveRateData.xml' automap=replace xmlmap=tb;
+libname tb xmlv2 "&root./Exercises/DailyTreasuryYieldCurveRateData.xml" automap=replace xmlmap=tb;
 
 * We join two data sets to prepare the time series data set;
 

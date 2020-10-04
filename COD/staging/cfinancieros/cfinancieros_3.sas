@@ -6,9 +6,6 @@
 
 options mprint mlogic minoperator fullstimer;
 
-%global root;
-%let root=/folders/myfolders/aar;
-
 %include "&root./COD/staging/cfinancieros/macrosCFinancieros.sas";
 %include "&root./COD/configuracion.sas";
 
