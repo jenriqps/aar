@@ -37,4 +37,8 @@ proc datasets library=ext nolist nodetails;
 	index create id_parameter / nomiss unique;
 quit;
 
+* Metadata;
+proc contents data=ext.parametros varnum;
+run;
+
 

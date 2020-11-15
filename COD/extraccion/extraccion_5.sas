@@ -36,4 +36,7 @@ proc datasets library=ext nolist nodetails;
 	index create val_age / nomiss unique;
 quit;
 
+* Metadata;
+proc contents data=ext.tablaMortalidad varnum;
+run;
 

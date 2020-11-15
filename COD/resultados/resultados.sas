@@ -223,6 +223,28 @@ proc sql noprint;
 	where cve_scenario = 0
 	;
 quit;
+
+* Statistics on the PV of profits;
+proc sort data=prft.profit out=work.profit_s;
+	by num_year;
+run;
+
+proc means data=work.profit_s noprint;
+	by num_year;
+	var mnt_pvAnnualProfit;
+	output out=work.profit_sum;
+run;
+
+* Binning of PV of annual profits;
+proc hpbin data=prft.PVPROFITS numbin=16 pseudo_quantile computequantile;
+input pvAnnualProfit;
+run;
+
+proc hpbin data=prft.PVPROFITS;
+input pvAnnualProfit;
+run;
+
+
 /*
 * Cálculo de VaR y CTE
 */

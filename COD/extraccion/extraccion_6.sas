@@ -41,3 +41,7 @@ quit;
 proc datasets lib=work kill nolist;
 run;
 	
+* Metadata;
+proc contents data=ext.escTasasInteres varnum;
+run;
+	

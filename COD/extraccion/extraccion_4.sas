@@ -54,3 +54,8 @@ proc datasets library=ext nolist nodetails;
 	modify activosFinancieros;
 	index create id_asset / nomiss unique;
 quit;
+
+* Metadata;
+proc contents data=ext.activosFinancieros varnum;
+run;
+

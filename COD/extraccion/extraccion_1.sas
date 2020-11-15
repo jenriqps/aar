@@ -47,4 +47,8 @@ proc datasets library=ext nolist nodetails;
 	index create cod_asset / nomiss unique;
 quit;
 
+* Metadata;
+proc contents data=ext.catActFin varnum;
+run;
+
 

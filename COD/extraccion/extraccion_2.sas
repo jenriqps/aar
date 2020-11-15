@@ -41,3 +41,7 @@ proc datasets library=ext nolist nodetails;
 	index create id_annuity / nomiss unique;
 quit;
 
+* Metadata;
+proc contents data=ext.asegurados varnum;
+run;
+
