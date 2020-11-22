@@ -149,7 +149,7 @@ proc sql;
 		, b.sourcetable as sourcetable_2
 		, B.source_text as source_text_2
 		, compged(A.source_text,B.source_text) as ged
-		from work.extract_result A inner join work.extract_result B
+		from work.extract_result A left join work.extract_result B
 		on (A.sourcetable ne B.sourcetable)
 		;
 quit;
@@ -160,9 +160,12 @@ proc sort data=work.merge_fuzzy;
 	by sourcetable_1 sourcetable_2;
 run;
 
-proc means data=work.merge_fuzzy sum;
+proc means data=work.merge_fuzzy sum noprint;
 	by sourcetable_1 sourcetable_2;
 	var ged;
-	output out=work.suspects sum(ged)=sum;
+	output out=work.suspects sum(ged)=sum mean(ged)=mean;
 run;
 
+proc freq data=work.merge_fuzzy noprint;
+	table sourcetable_1*sourcetable_2*ged / out= work.suspects_2;
+run;
