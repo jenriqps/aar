@@ -64,16 +64,6 @@ run;
 %put &=filenames;
 %put &=filecount;
 
-/*
-%macro test;
-%do i=1 %to 8;
-%put %scan(&filenames,&i,%STR( ));
-%end;
-%mend test;
-%test;
-*/
-
-
 %macro extract; 
 	%do i=1 %to &filecount;
 	data extract_result_&i(where=(length(source_text)>1));
@@ -91,6 +81,10 @@ run;
 	%end;
 %mend extract;
 %extract;
+
+proc sql;
+	drop table work.extract_result;
+quit;
 
 data work.extract_result(index=(sourcetable));
 	set extract_result_:;
@@ -130,6 +124,10 @@ run;
 %mend parsing;
 %parsing;
 
+proc sql;
+	drop table work.parsing_result;
+quit;
+
 data work.parsing_result(index=(sourcetable));
 	set parsing_result_:;
 run;
@@ -156,5 +154,15 @@ proc sql;
 		;
 quit;
 
+* Identifying suspects;
 
+proc sort data=work.merge_fuzzy;
+	by sourcetable_1 sourcetable_2;
+run;
+
+proc means data=work.merge_fuzzy sum;
+	by sourcetable_1 sourcetable_2;
+	var ged;
+	output out=work.suspects sum(ged)=sum;
+run;
 
