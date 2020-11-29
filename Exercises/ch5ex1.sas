@@ -87,15 +87,23 @@ proc sgplot data=work.totalLoss;
 	yaxis grid;
 run;
 
-proc univariate data=work.totalLoss pctldef=1 noprint;
+proc univariate data=work.totalLoss pctldef=1;
 	var totalLoss;
 	output out=work.var PCTLPRE=p pctlpts=0.005;
 run;
 
-title "Requerimiento de Capital por Riesgos Técnicos y Financieros";
+title "Requerimiento de Capital por Riesgos Técnicos y Financieros de Seguros";
 proc sql;
 	select * into: var
  	from work.var
+ 	;
+quit;
+
+title "Expected Shortfall";
+proc sql;
+	select mean(totalLoss) into: es
+ 	from work.totalLoss
+ 	where totalLoss < &var.
  	;
 run;
 
@@ -103,8 +111,9 @@ title 'Pérdida total';
 title2 "Histograma";
 proc sgplot data=work.totalLoss;
  	histogram totalLoss / fillattrs=(color=green transparency=0.97);
- 	*density totalLoss / lineattrs=(color=red);
-  	refline &var. / axis=x lineattrs=(color=red pattern=15) label = ("RCRTyF");
+ 	density totalLoss / lineattrs=(color=red);
+  	refline &var. / axis=x lineattrs=(color=red pattern=15) label = ("RCTyFS = &var.");
+  	refline &es. / axis=x lineattrs=(color=blue pattern=15) label = ("Expected Shortfall = &es.");
  	xaxis grid;
 	yaxis grid;
 run;
