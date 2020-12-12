@@ -8,7 +8,7 @@
 * Getting the data set of policies;
 
 * Bancomer ;
-data work.bd_viv(drop=i);
+data work.bd_viv(drop=i label="Policies on Mortgages");
 	call streaminit(2020);
 	length cd_lendingInstitution $30;
 	label 
@@ -83,7 +83,8 @@ run;
 
 * Getting the Factor Requerimiento de Capital V;
 
-FILENAME REFFILE 'C:\Users\jenri\Google Drive\Cosas del trabajo\SAS\SASUniversityEdition\myfolders\aar\Exercises\FactorRequCapitalV.xlsx';
+* Change the following path based on the location of your file FactorRequCapitalV.xlsx;
+FILENAME REFFILE '/home/jenriqps/aar/Exercises/FactorRequCapitalV.xlsx';
 
 PROC IMPORT DATAFILE=REFFILE
 	DBMS=XLSX

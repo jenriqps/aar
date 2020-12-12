@@ -127,6 +127,9 @@ proc sql;
 		else "m<=60" end as m label = "Madurez (meses)"		
 		from work.bd_viv a
 		;
+quit;
+
+proc sql;		
 	create table work.FACTORREQUCAPITALV_2 as
 		select 
 		a.*
@@ -152,12 +155,10 @@ proc sql;
 	;
 quit;
 
-
-/*
-
-data _NULL_;
-	dcl odsout obj1();
-	obj1.image(file:"C:\Users\jenri\Google Drive\Cosas del trabajo\SAS\SASUniversityEdition\myfolders\aar\Exercises\t647a.png");
-run;
-
-*/
+ods region;
+title "Pérdida Máxima Probable (PML)";
+proc sql;	
+	select sum(MRVR) label="PML" format=comma16.2
+	from work.resultado
+	;
+quit;

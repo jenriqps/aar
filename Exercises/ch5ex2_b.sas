@@ -50,6 +50,17 @@ data work.Z;
 	i = _n_;
 run;
 
+
+title "Box plot for the exchange rate MXN/USD 1 Year";
+proc sgplot data=work.Z;
+	vbox Z / fillattrs=(color=red transparency=0.9) DISPLAYSTATS=(mean median std max min datamin datamax);
+	yaxis grid;
+run;
+
+proc univariate data=work.Z outtable=work.stat;
+	var Z;
+run;
+
 title "Simulation of many paths for the exchange rate MXN/USD 1 Year";
 proc sgplot data=work.Z;
 	histogram Z / fillattrs=(color=red transparency=0.9);
@@ -57,9 +68,4 @@ proc sgplot data=work.Z;
 	yaxis grid;
 run;
 
-title "Box plot for the exchange rate MXN/USD 1 Year";
-proc sgplot data=work.Z;
-	vbox Z / fillattrs=(color=red transparency=0.9) DISPLAYSTATS=(mean median std max min datamin datamax);
-	yaxis grid;
-run;
 
