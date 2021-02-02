@@ -39,7 +39,7 @@ quit;
 /* We clean the Work library */
 	
 proc datasets lib=work kill nolist;
-run;
+quit;
 	
 * Metadata;
 proc contents data=ext.escTasasInteres varnum;

@@ -36,7 +36,7 @@ data prft.profit;
 run;
 
 proc datasets lib=work kill nolist;
-	run;
+	quit;
 
 proc sql;
 	create table prft.pvProfits as select cve_scenario

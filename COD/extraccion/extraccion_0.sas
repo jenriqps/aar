@@ -9,7 +9,7 @@ options  fmtsearch=(ext);
 %include "&root./COD/configuracion.sas";
 
 proc datasets lib=ext kill nolist;
-run;
+quit;
 
 proc datasets lib=work kill nolist nodetails;
 quit;

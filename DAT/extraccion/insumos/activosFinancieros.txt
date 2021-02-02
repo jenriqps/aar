@@ -1,4 +1,0 @@
-id_asset|dsc_asset|num_remainingYears|num_YrsCallProtection|pct_annualYield|pct_portfolio|cod_asset|flg_callable
-1|"Asset #1: '15-year, ""AAA""-rated bond issued 2 years ago, callable after 5 years"|13|3|0.055|0.5|1|1
-2|"Asset #2: '25-year, zero-coupon, non-callable ""A""-rated bond issued 3 years ago"|22||0.065|0.125|2|0
-3|Asset #3: '25-year pool of residential mortgages originated at beginning of year|25||0.07|0.375|3|0
