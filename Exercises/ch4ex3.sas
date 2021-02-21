@@ -9,6 +9,8 @@ Chapter 4: Tipos de Riesgo
 Exercise 3
 */
 
+title "Chapter 4: Tipos de Riesgo. Exercise 3";
+
 * Asset allocation ;
 data work.assetallocation(label="XYZ’s current asset allocation");
 	label bondrating="Bond Rating" mktvalue="Market value of assets ($ million)";
@@ -37,7 +39,8 @@ proc iml;
 	edit work.assetallocation;
 	read all var {bondrating mktvalue};
 	close work.assetallocation; 	
-
+	
+	print "Asset allocation";
 	print bondrating mktvalue;
 
 	* Exporting the migration probabilities to a matrix;
@@ -45,6 +48,7 @@ proc iml;
 	read all var _NUM_ into migrprob[colname=numVars];
 	close work.migrprob; 	
 
+	print "Migration probabilities";
 	print migrprob;
 	
 	print "Calculate the expected credit losses from default in the next year
@@ -73,7 +77,8 @@ proc iml;
 	print amount;
 
 	* Simulations;
-
+	
+	print "Simulate 1,000,000 credit losses and plot the distribution.";
 	
 	N = 1000000;
 
@@ -120,9 +125,16 @@ proc datasets lib=work nolist;
 	label cl = "Credit loss";
 quit;
 
-proc sgplot data=work.cl;
-	histogram cl;
+ods graphics / reset width=6.4in height=4.8in imagemap;
+
+proc sgplot data=WORK.CL;
+	title height=14pt "Credit losses";
+	vbar CL / fillattrs=(color=CXf1eb28) datalabel stat=percent;
+	yaxis grid;
 run;
+
+ods graphics / reset;
+title;
 
 proc freq data=work.cl;
 	table cl;
