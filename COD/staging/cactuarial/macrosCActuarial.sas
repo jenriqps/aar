@@ -214,7 +214,7 @@
 	%put Plazo &n. || Edad alcanzada &x. || Pago &pymt. || Plazo original de los pagos ciertos &n_cert.;
 
 	proc iml;	
-		edit ext.TABLAMORTALIDADv2;
+		use ext.TABLAMORTALIDADv2;
 		read all var _NUM_ into lt[colname=numVars];
 		close ext.TABLAMORTALIDADv2; 	
 	

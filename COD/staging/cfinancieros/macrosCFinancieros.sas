@@ -386,7 +386,7 @@ Cálculo de precios de activos con SAS/IML
 		%do;
 		
 			proc iml;
-				edit work.curve_int;
+				use work.curve_int;
 				read all var _NUM_ into curv[colname=numVars];
 				close work.curve_int;
 				

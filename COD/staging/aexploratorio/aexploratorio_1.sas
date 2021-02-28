@@ -17,7 +17,7 @@ options  fmtsearch=(ext);
 
 * We add the values to the mortality table;
 proc iml;
-	edit ext.TABLAMORTALIDAD;
+	use ext.TABLAMORTALIDAD;
 	read all var _NUM_ into lt[colname=numVars];
 	close ext.TABLAMORTALIDAD; 	
 

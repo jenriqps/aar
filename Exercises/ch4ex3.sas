@@ -36,7 +36,7 @@ BBB 0.05 0.10 0.76 0.09 0.20
 
 proc iml;
 	* Exporting the asset allocation to a matrix ;
-	edit work.assetallocation;
+	use work.assetallocation;
 	read all var {bondrating mktvalue};
 	close work.assetallocation; 	
 	
@@ -44,7 +44,7 @@ proc iml;
 	print bondrating mktvalue;
 
 	* Exporting the migration probabilities to a matrix;
-	edit work.migrprob;
+	use work.migrprob;
 	read all var _NUM_ into migrprob[colname=numVars];
 	close work.migrprob; 	
 
