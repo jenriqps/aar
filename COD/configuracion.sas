@@ -4,8 +4,8 @@
 
 %global root;
 
-* Modifica la siguiente ruta si es necesario;
-%let root=/folders/myfolders/aar;
+* La macrovariable _metauser tiene tu nombre de usuario;
+%let root=/home/&_metauser./aar;
 
 /*************************************************************************************************************************************/
 /*****								 Asignacion de librerias									 								******/
