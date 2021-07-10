@@ -31,10 +31,11 @@ data work.simLosses(label="Sample of simulated losses");
 	/*
 	Calculate the 98% CTE of the net losses after reinsurance recoveries for each reinsurance option
 	*/
-data work.simLosses2;
-	format L1 L2 dollar32.2;
+data work.simLosses2(label="Sample of simulated retained losses");
+	format i 4. L0 L1 L2 dollar32.2;
 	label L1="Retained loss under the Quota Share contract" 
-		L2="Retained loss under the Stop Loss contract";
+		L2="Retained loss under the Stop Loss contract"
+		VaR_flg="VaR's flag";
 	set work.simLosses;
 	L1=&alpha. * L0;
 	L2=L0 - min(L0-&priority., &capacity.);
@@ -59,53 +60,73 @@ run;
 title;
 
 proc sql;
-	create table work.simLosses3 as select a.* , sum(VaR_flg*L0) as VaR0
-		, sum(VaR_flg*L1) as VaR1
-		, sum(VaR_flg*L2) as VaR2 from work.simLosses2 a;
+	create table work.simLosses3(label="Sample of simulated retained losses and their VaR") as 
+		select a.* 
+		, sum(VaR_flg*L0) as VaR0 label="No reinsurance VaR" format=dollar32.2
+		, sum(VaR_flg*L1) as VaR1 label="Quota Share VaR" format=dollar32.2
+		, sum(VaR_flg*L2) as VaR2 label="Stop Loss VaR" format=dollar32.2
+		from work.simLosses2 a;
 quit;
 
 proc sql;
-	create table work.CTE0 as select a.* , mean(L0) as CTE 
-		label="CTE no reinsurance" format=dollar32.6
+	create table work.CTE0(label="No reinsurance CTE") as 
+		select a.* 
+		, mean(L0) as CTE label="CTE no reinsurance" format=dollar32.6
 		, var(L0) as Variance
-		, ((calculated Variance + &conf.* (calculated 
-		CTE-VaR0)**2)/(&n.*(1-&conf.)))**0.5 as stdError
-		, calculated CTE + calculated stdError as upper
-		, calculated CTE - calculated stdError as lower from work.simLosses3 a 
+		, ((calculated Variance + &conf.* (calculated CTE-VaR0)**2)/(&n.*(1-&conf.)))**0.5 as stdError
+		, calculated CTE + calculated stdError as upper format=dollar32.6
+		, calculated CTE - calculated stdError as lower format=dollar32.6
+		from work.simLosses3 a 
 		where L0 > VaR0;
-	create table work.CTE1 as select a.* , mean(L1) as CTE 
-		label="CTE with Quota Share" format=dollar32.6
+	create table work.CTE1(label="Quote Share CTE") as 
+		select a.* 
+		, mean(L1) as CTE label="CTE with Quota Share" format=dollar32.6
 		, var(L1) as Variance
-		, ((calculated Variance + &conf.* (calculated 
-		CTE-VaR1)**2)/(&n.*(1-&conf.)))**0.5 as stdError
-		, calculated CTE + calculated stdError as upper
-		, calculated CTE - calculated stdError as lower from work.simLosses3 a 
+		, ((calculated Variance + &conf.* (calculated CTE-VaR1)**2)/(&n.*(1-&conf.)))**0.5 as stdError
+		, calculated CTE + calculated stdError as upper format=dollar32.6
+		, calculated CTE - calculated stdError as lower format=dollar32.6
+		from work.simLosses3 a 
 		where L1 > VaR1;
-	create table work.CTE2 as select a.* , mean(L2) as CTE 
-		label="CTE with Stop Loss" format=dollar32.6
+	create table work.CTE2(label="Stop loss CTE") as select 
+		a.* 
+		, mean(L2) as CTE label="CTE with Stop Loss" format=dollar32.6
 		, var(L1) as Variance
-		, ((calculated Variance + &conf.* (calculated 
-		CTE-VaR2)**2)/(&n.*(1-&conf.)))**0.5 as stdError
-		, calculated CTE + calculated stdError as upper
-		, calculated CTE - calculated stdError as lower from work.simLosses3 a 
+		, ((calculated Variance + &conf.* (calculated CTE-VaR2)**2)/(&n.*(1-&conf.)))**0.5 as stdError
+		, calculated CTE + calculated stdError as upper format=dollar32.6
+		, calculated CTE - calculated stdError as lower format=dollar32.6
+		from work.simLosses3 a 
 		where L2 > VaR2;
 quit;
 
 proc sql;
-	create table work.graph as select cte
+	create table work.graph(label="CTE") as 
+		select 
+		"No reinsurace" as scenario length=50 label="Scenario"
+		, cte label="CTE" format=dollar32.6
 		, upper
-		, lower from work.CTE0 union select cte
+		, lower 
+		from work.CTE0 
+		union 
+		select 
+		"Quota Share" as scenario length=50
+		, cte label="CTE" format=dollar32.6
 		, upper
-		, lower from work.CTE1 union select cte
+		, lower 
+		from work.CTE1 
+		union 
+		select 
+		"Stop loss" as scenario length=50
+		, cte label="CTE" format=dollar32.6
 		, upper
-		, lower from work.CTE2;
+		, lower 
+		from work.CTE2;
 quit;
 
 title "Confidence intervals for the CTE";
 proc sgplot data=work.graph noautolegend;
-	vbarbasic cte / response=cte stat=mean colorresponse=cte;
-	scatter x=cte y=upper / markerattrs=(symbol=trianglefilled color=green size=14);
-	scatter x=cte y=lower / markerattrs=(symbol=trianglefilled color=green size=14);
+	vbarbasic scenario / response=cte stat=mean colorresponse=cte;
+	scatter x=scenario y=upper / markerattrs=(symbol=trianglefilled color=green size=14);
+	scatter x=scenario y=lower / markerattrs=(symbol=trianglefilled color=green size=14);
 	xaxis grid label="Options";
 	yaxis grid label="CTE";
 run;
