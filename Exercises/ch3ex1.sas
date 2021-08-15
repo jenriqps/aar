@@ -90,7 +90,7 @@ proc sql;
 	create table work.CTE2(label="Stop loss CTE") as select 
 		a.* 
 		, mean(L2) as CTE label="CTE with Stop Loss" format=dollar32.6
-		, var(L1) as Variance
+		, var(L2) as Variance
 		, ((calculated Variance + &conf.* (calculated CTE-VaR2)**2)/(&n.*(1-&conf.)))**0.5 as stdError
 		, calculated CTE + calculated stdError as upper format=dollar32.6
 		, calculated CTE - calculated stdError as lower format=dollar32.6
