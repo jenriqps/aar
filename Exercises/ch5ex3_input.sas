@@ -84,7 +84,7 @@ run;
 * Getting the Factor Requerimiento de Capital V;
 
 * Change the following path based on the location of your file FactorRequCapitalV.xlsx;
-FILENAME REFFILE '/home/jenriqps/aar/Exercises/FactorRequCapitalV.xlsx';
+FILENAME REFFILE "/home/&_metauser./aar/Exercises/FactorRequCapitalV.xlsx";
 
 PROC IMPORT DATAFILE=REFFILE
 	DBMS=XLSX
