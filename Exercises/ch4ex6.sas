@@ -9,7 +9,8 @@ Chapter 4: Tipos de Riesgo
 Exercise 6
 */
 
-DATA myel;
+* Myelomatosis data;
+DATA work.myel(label="Myelomatosis data set");
 label treat="Drug treatments" dur="Time in days from the point of randomization to either death or censoring"
 status="Variable has a value of 1 for those who died and 0 for those who were censored"
 renal="Indicator variable for normal (1) versus impaired (0) renal functioning at the time of randomization"
@@ -43,14 +44,17 @@ DATALINES;
 23 1 2 1
 ;
 
-proc print data=myel;
+* Print data;
+proc print data=work.myel;
 run;
 
-PROC LIFETEST DATA=myel PLOTS=S(NOCENSOR ATRISK CL CB=EP)  OUTSURV=a alpha=0.05;
-TIME dur*status(0);
+* Estimate the survival function with the Kaplan-Meier method for all patients ;
+PROC LIFETEST DATA=work.myel PLOTS=S(NOCENSOR ATRISK CL CB=EP) OUTSURV=work.survest1 alpha=0.05;
+	TIME dur*status(0);
 RUN;
 
-PROC LIFETEST DATA=myel PLOTS=S(NOCENSOR ATRISK CL CB=EP TEST);
-TIME dur*status(0);
-STRATA treat;
+* Estimate the survival function with the Kaplan-Meier method, for each of the treatments;
+PROC LIFETEST DATA=work.myel PLOTS=S(NOCENSOR ATRISK CL CB=EP TEST) OUTSURV=work.survest2 alpha=0.05;
+	TIME dur*status(0);
+	STRATA treat;
 RUN;
