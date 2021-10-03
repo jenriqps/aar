@@ -33,38 +33,57 @@ proc iml;
 	print "95% quantile of the standard normal distribution";
 	print alpha; 
 	
-	print "VaR before any new investment";
+	print "VaR before any new investment (Delta-Normal Model)";
+	print "VaR_p = alpha * sigma_p * W";
 	
 	VaR_p = alpha * sigma_p * W;
 	
 	print VaR_p;
+
 	
 	print "VaR after investment in corporate bonds";
 	
 	W1 = J(1,2);
+	print W1;
+	
 	W1[1,1]=W;
 	W1[1,2]=P;
+
+
 	print "Updated portfolio asset" W1;
+
+	
 	cov1 = corr[1,1]*sigma_p*sigma[1,1];
 	print "Covariance" cov1;
+
+
+
 	
 	Sigma1 = J(2,2);
 	Sigma1[1,1]=sigma_p**2;
 	Sigma1[2,2]=sigma[1,1]**2;
 	Sigma1[2,1]=cov1;
 	Sigma1[1,2]=cov1;
-	
+
+
 	print "Covariance matrix" Sigma1;
+
+	
+	print "VaR_p1 = alpha * (W1 * Sigma1 * t(W1))**0.5";
 	
 	VaR_p1 = alpha * (W1 * Sigma1 * t(W1))**0.5;
 	
 	print VaR_p1;
+
+
 	
 	print "Incremental VaR with investment in corporate bonds";
+	print "IVaR1 = VaR_p1- VaR_p";
 	
 	IVaR1 = VaR_p1- VaR_p;
 	
 	print IVaR1;
+
 	
 	
 	print "VaR after investment in private placement bonds";
@@ -91,6 +110,8 @@ proc iml;
 	IVaR2 = VaR_p2- VaR_p;
 	
 	print IVaR2;
+
+
 	
 	IVaR = J(3,2);
 	
@@ -117,7 +138,7 @@ proc iml;
 	print "VaR" VaR;
 	LVaR = VaR + ((ask-bid)/mid)/2*P;
 
-	print "Liquidity-adjusted VaR (LVaR)" LVaR;
+	print "Liquidity-adjusted VaR (LVaR) = VaR + ((ask-bid)/mid)/2*P" LVaR;
 	
 	LVaRout = J(4,3);
 
