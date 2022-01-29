@@ -13,7 +13,7 @@ Exercise 1
 options threads mprint mlogic minoperator fullstimer;
 
 * Path of the folder with the text files;
-%let dir=/home/jenriqps/aar/Exercises/ch6ex1_data/;
+%let dir=/home/&_metauser./aar/Exercises/ch6ex1_data/;
 
 * Getting the names of the text files in the path folder;
 * dread function returns the name of a directory member;
@@ -75,10 +75,10 @@ Purpose:
 	label sourcetable="Document ID" source_text="Document";
 	infile %scan(&filelist,&i,%STR( )) length=linelen lrecl=5000 pad;
 	varlen=linelen-0;
-	input source_text $varying500. varlen;
-	length sourcetable $50;
+	input source_text0 $varying10000. varlen;
+	length sourcetable $50 source_text $10000;
 	sourcetable=%scan(&filenames,&i,%STR( ));
-	
+	source_text = tranwrd(source_text0,"Lesson","Leeson");
 	keep sourcetable source_text;
 	run;
 	
@@ -107,12 +107,14 @@ quit;
 	data parsing_result_&i;
 	infile %scan(&filelist,&i,%STR( )) length=linelen lrecl=5000 pad;
 	varlen=linelen-0;
-	input source_text $varying500. varlen;
-	length sourcetable $50;
+	input source_text0 $varying10000. varlen;
+	length sourcetable $50 source_text $10000;
 	sourcetable=%scan(&filenames,&i,%STR( ));
+	source_text = tranwrd(source_text0,"Lesson","Leeson");
 
-	*Identifying corporations;	
-	Corp_Pattern = "/(\b[A-Z]\w+\s[A-Z]\w+(\s[A-Z]\w+)*\b)|(\b(\w+\s+)*\w+\s+\ucorp(oration)?\b|\uinc\.?\b|\uco\.?\b|LLC\b|Company\b)/o";
+	*Identifying main entities;
+	* You can improve the next code if it is needed;
+	Corp_Pattern = "/(\bBaring\w+\b)|(\bJap\w+\b)|(\bSinga\w+\b)|(\bIngla\w+\b)|(\b[A-Z]\w+\s[A-Z]\w+(\s[A-Z]\w+)*\b)|(\b(\w+\s+)*\w+\s+\ucorp(oration)?\b|\uinc\.?\b|\uco\.?\b|LLC\b|Company\b)/o";
 	
 	pattern_ID = PRXPARSE(Corp_Pattern);
 	start = 1;
