@@ -38,7 +38,7 @@ data work.simLosses2(label="Sample of simulated retained losses");
 		VaR_flg="VaR's flag";
 	set work.simLosses;
 	L1=&alpha. * L0;
-	L2=L0 - min(L0-&priority., &capacity.);
+	L2=L0 - min(max(L0-&priority.,0), &capacity.);
 
 	if i=&nperc. then
 		VaR_flg=1;
