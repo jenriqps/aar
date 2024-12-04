@@ -2,6 +2,7 @@
  * Notas de Administración Actuarial del Riesgo;
  * Jose Enrique Perez ;
  * Facultad de Ciencias. Universidad Nacional Autónoma de México ;
+ * 
  **********************************************************************/
 
 /*
