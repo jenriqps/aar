@@ -30,7 +30,7 @@ data work.bd_viv(drop=i label="Policies on Mortgages");
 		num_remainingYears = rand("binomial",0.5,28); 
 		mnt_outsPrincipal = rand("exponential")*1000000; 
 		cd_currency = "MXN";
-		cd_lendingInstitution = "BANCOMER";
+		cd_lendingInstitution = "BBVA";
 		num_maturityYears = 30 -  num_remainingYears;
 		num_defaultmonths = rand("binomial",0.01,12); 
 		mnt_payment=mort(mnt_outsPrincipal,.,pct_annualYield,num_maturityYears);
